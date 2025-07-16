@@ -1,16 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<?import javafx.scene.control.Button?>
-<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="org.example.int_biblioteca.HelloController">
+<VBox alignment="CENTER" maxHeight="400.0" maxWidth="400.0" minHeight="400.0" minWidth="400.0" prefHeight="400.0" prefWidth="400.0" spacing="20.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.int_biblioteca.HelloController">
     <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
 
-    <Label fx:id="welcomeText"/>
-    <Button text="Hello!" onAction="#onHelloButtonClick"/>
+    <Label fx:id="welcomeText" text="Iniciar sesión">
+      <graphic>
+         <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="0.0" />
+      </graphic></Label>
+   <HBox alignment="TOP_CENTER" maxHeight="20.0" maxWidth="300.0" minHeight="0.0" minWidth="10.0" prefHeight="50.0" prefWidth="200.0">
+      <children>
+         <PasswordField minHeight="20.0" prefHeight="20.0" />
+         <TextField minHeight="20.0" prefHeight="20.0" prefWidth="164.0" />
+          <Button maxHeight="20.0" maxWidth="20.0" minHeight="20.0" minWidth="20.0" onAction="#onHelloButtonClick" prefHeight="20.0" prefWidth="20.0" text="Hello!" />
+      </children>
+   </HBox>
+   <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="280.0" text="Iniciar sesión" />
 </VBox>
