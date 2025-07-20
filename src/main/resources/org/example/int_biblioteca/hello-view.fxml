@@ -19,7 +19,7 @@
          <HBox alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="43.0" prefWidth="0.0" translateX="25.0" translateY="30.0">
             <children>
                <Label text="Correo" />
-               <TextField alignment="TOP_LEFT" maxHeight="20.0" maxWidth="179.0" minHeight="25.0" prefHeight="25.0" prefWidth="179.0" promptText="nombre@mail.com" translateX="-36.0" translateY="20.0" />
+               <TextField fx:id="usernameField" alignment="TOP_LEFT" maxHeight="20.0" maxWidth="179.0" minHeight="25.0" prefHeight="25.0" prefWidth="179.0" promptText="nombre@mail.com" translateX="-36.0" translateY="20.0" />
             </children>
          </HBox>
          <HBox alignment="TOP_CENTER" prefHeight="54.0" prefWidth="260.0" translateX="25.0" translateY="30.0">
@@ -27,7 +27,7 @@
                <AnchorPane prefHeight="82.0" prefWidth="246.0" translateX="-50.0">
                   <children>
                      <TextField fx:id="verPass" alignment="TOP_LEFT" layoutX="66.0" layoutY="24.0" minHeight="20.0" prefHeight="25.0" prefWidth="157.0" promptText="1234567890123456" />
-                     <PasswordField fx:id="pass" alignment="TOP_LEFT" layoutX="66.0" layoutY="23.0" minHeight="20.0" prefHeight="25.0" prefWidth="158.0" promptText="****************" />
+                     <PasswordField fx:id="passwordField" alignment="TOP_LEFT" layoutX="66.0" layoutY="23.0" minHeight="20.0" prefHeight="25.0" prefWidth="158.0" promptText="****************" />
                      <Label alignment="TOP_CENTER" contentDisplay="TOP" layoutX="66.0" layoutY="5.0" text="Contraseña" />
                      <Button fx:id="ojo" alignment="TOP_CENTER" layoutX="222.0" layoutY="23.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#verPass" prefHeight="25.0" prefWidth="25.0" text="👀" textAlignment="CENTER">
                         <font>
@@ -40,8 +40,8 @@
          </HBox>
          <Hyperlink text="Olvie mi contraseña" translateX="-25.0" translateY="35.0" />
          <CheckBox mnemonicParsing="false" text="Recordarme" translateX="-25.0" translateY="45.0" />
-         <Hyperlink text="¿No tienes ceunta? Registrate." translateY="50.0" />
-         <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="175.0" text="Iniciar sesión" translateX="5.0" translateY="60.0" />
+         <Hyperlink onAction="#handleRegister" text="¿No tienes ceunta? Registrate." translateY="50.0" />
+         <Button mnemonicParsing="false" onAction="#handleLogin" prefHeight="26.0" prefWidth="175.0" text="Iniciar sesión" translateX="5.0" translateY="60.0" />
       </children>
    </VBox>
 </VBox>
