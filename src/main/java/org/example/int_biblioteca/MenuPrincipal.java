@@ -1,9 +1,16 @@
 package org.example.int_biblioteca;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.event.ActionEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.control.Label;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MenuPrincipal {
     // Declaración de los componentes de la interfaz
@@ -14,11 +21,9 @@ public class MenuPrincipal {
     @FXML
     private Button botonCatalogoL; // Botón para acceder al catálogo de libros
     @FXML
-    private Button btnIzq; // Botón para navegar a la izquierda
-    @FXML
-    private Button btnDerch; // Botón para navegar a la derecha
-    @FXML
     private TextField buscarField; // Campo de texto para buscar
+    @FXML
+    private HBox sliderContainer; // Contenedor para el slider
 
     // Método que se ejecuta al hacer clic en el botón de menú
     @FXML
@@ -41,18 +46,21 @@ public class MenuPrincipal {
         System.out.println("Botón Catálogo de Libros presionado");
     }
 
-    // Método que se ejecuta al hacer clic en el botón de navegación izquierda
+    // Método para inicializar el slider
     @FXML
-    private void handleBtnIzq(ActionEvent event) {
-        // Lógica para navegar a la izquierda
-        System.out.println("Botón Izquierda presionado");
+    public void initialize() {
+        cargarSlider();
     }
 
-    // Método que se ejecuta al hacer clic en el botón de navegación derecha
-    @FXML
-    private void handleBtnDerch(ActionEvent event) {
-        // Lógica para navegar a la derecha
-        System.out.println("Botón Derecha presionado");
-    }
+    private void cargarSlider() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("slider.fxml")); // Asegúrate de que la ruta sea correcta
+            HBox slider = loader.load();
+            sliderContainer.getChildren().add(slider);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+
+    }
 }
