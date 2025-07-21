@@ -106,7 +106,7 @@ public class HelloController {
 
         for (int i = 0; i < correos.size(); i++) {
             if (correos.get(i).equals(correo) && contraseñas.get(i).equals(pass)) {
-                cambiarEscena("menu.fxml", event);
+                cambiarEscena("menu-principal.fxml", event);
                 return;
             }
         }
