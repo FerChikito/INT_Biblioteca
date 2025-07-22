@@ -1,16 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
 
-<?import javafx.scene.control.Button?>
-<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="org.example.int_biblioteca.HelloController">
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-    </padding>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.int_biblioteca.HelloController"
+            prefHeight="400.0" prefWidth="600.0">
 
-    <Label fx:id="welcomeText"/>
-    <Button text="Hello!" onAction="#onHelloButtonClick"/>
-</VBox>
+    <children>
+        <VBox layoutX="100.0" layoutY="40.0" spacing="10" alignment="TOP_CENTER">
+            <children>
+                <Label text="Recuperar Contraseña">
+                    <font>
+                        <Font size="24.0" />
+                    </font>
+                </Label>
+
+                <Label text="Matrícula" />
+                <TextField fx:id="matriculaField" promptText="20243rd019237" />
+
+                <Label text="Nueva contraseña" />
+                <HBox spacing="5">
+                    <children>
+                        <PasswordField fx:id="passwordField" promptText="Contraseña" />
+                        <TextField fx:id="passwordVisibleField" promptText="Contraseña" visible="false" managed="false" />
+                        <Button fx:id="togglePasswordButton" text="👁" onAction="#togglePasswordVisibility" />
+                    </children>
+                </HBox>
+
+                <Label text="Correo" />
+                <TextField fx:id="correoField" promptText="Ejemplo@mail.com" />
+
+                <Label text="Confirmar correo" />
+                <TextField fx:id="confirmarCorreoField" promptText="Ejemplo@mail.com" />
+
+                <Button fx:id="confirmarButton" text="Confirmar" maxWidth="Infinity" onAction="#handleConfirmar" />
+            </children>
+            <padding>
+                <Insets top="10" right="20" bottom="10" left="20"/>
+            </padding>
+        </VBox>
+    </children>
+</AnchorPane>
