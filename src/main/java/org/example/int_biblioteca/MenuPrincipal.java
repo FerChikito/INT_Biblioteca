@@ -7,6 +7,9 @@ import javafx.scene.control.TextField;
 import javafx.event.ActionEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,6 +27,8 @@ public class MenuPrincipal {
     private TextField buscarField; // Campo de texto para buscar
     @FXML
     private HBox sliderContainer; // Contenedor para el slider
+    @FXML
+    private VBox infoP;
 
     // Método que se ejecuta al hacer clic en el botón de menú
     @FXML
@@ -50,6 +55,7 @@ public class MenuPrincipal {
     @FXML
     public void initialize() {
         cargarSlider();
+        cargarTexto(); // Llama a cargarTexto aquí
     }
 
     private void cargarSlider() {
@@ -62,5 +68,22 @@ public class MenuPrincipal {
         }
 
 
+    }
+    private void cargarTexto() {
+        // Limpiar el VBox
+        infoP.getChildren().clear();
+        // Crear el texto
+        Label titulo = new Label("INFORMACIÓN PRINCIPAL");
+        titulo.setFont(Font.font("Arial", FontWeight.BOLD, 18));
+
+        // Crear un Label para el contenido
+        Label contenido = new Label("Bienvenido a la Biblioteca Digital.");
+        contenido.setWrapText(true); // Permite que el texto se ajuste a múltiples líneas
+        // Añadir el contenido adicional
+        Label horario = new Label("\n• Horario: Lunes a Viernes (9:00 - 18:00)");
+        Label prestamos = new Label("\n• Préstamos: Máximo 5 libros por usuario");
+        Label contacto = new Label("\n• Contacto: biblioteca@ejemplo.com");
+        // Añadir al VBox
+        infoP.getChildren().addAll(titulo, contenido, horario, prestamos, contacto);
     }
 }
