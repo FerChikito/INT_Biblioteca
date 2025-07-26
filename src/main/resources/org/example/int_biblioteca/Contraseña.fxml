@@ -17,7 +17,7 @@
                                 <Pane layoutX="25.0" layoutY="25.0" maxHeight="300.0" maxWidth="300.0" minHeight="300.0" minWidth="350.0" prefHeight="300.0" prefWidth="300.0" style="-fx-background-color: white;">
                                     <children>
                                         <Label layoutX="101.0" layoutY="58.0" style="-fx-text-fill: #555555; -fx-font-size: 14;" text="Contraseña Actual" />
-                                        <PasswordField fx:id="currentPasswordField" layoutX="101.0" layoutY="78.0" style="-fx-background-color: transparent; -fx-border-color: #dddddd; -fx-border-width: 0 0 1px 0;" />
+                                        <PasswordField fx:id="currentPasswordField1" layoutX="101.0" layoutY="78.0" style="-fx-background-color: transparent; -fx-border-color: #dddddd; -fx-border-width: 0 0 1px 0;" />
                                         <TextField fx:id="currentPasswordVisibleField" layoutX="101.0" layoutY="158.0" style="-fx-background-color: transparent; -fx-border-color: #dddddd; -fx-border-width: 0 0 1px 0;" visible="false" />
                                         <Button fx:id="toggleCurrentPasswordButton" layoutX="257.0" layoutY="78.0" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-border-color: #dddddd; -fx-border-radius: 3px;" text="👁" />
                                         <Label layoutX="100.0" layoutY="123.0" style="-fx-text-fill: #555555; -fx-font-size: 14;" text="Contraseña Nueva" />
@@ -29,12 +29,12 @@
                                 </Pane>
                             </children>
                         </Pane>
-                        <Button layoutX="19.0" layoutY="20.0" mnemonicParsing="false" text="Regresar" style="-fx-background-color: #091740; -fx-text-fill: white; -fx-font-weight: bold;" />
+                        <Button layoutX="19.0" layoutY="20.0" mnemonicParsing="false" style="-fx-background-color: #091740; -fx-text-fill: white; -fx-font-weight: bold;" text="Regresar" />
                     </children>
                 </Pane>
                 <ImageView fitHeight="60.0" fitWidth="60.0" layoutX="14.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@../../../../logo/WhatsApp%20Image%202025-07-23%20at%206.03.46%20PM.jpeg" />
+                        <Image url="@../../../../logo/WhatsApp%20Image%202025-07-23%20at%206.03.46%20PM.jpg" />
                     </image></ImageView>
             </children>
         </Pane>
