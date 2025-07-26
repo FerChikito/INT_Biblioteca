@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="600.0" maxWidth="600.0" minHeight="600.0" minWidth="600.0" prefHeight="600.0" prefWidth="600.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.int_biblioteca.HelloController">
+    <children>
+        <Pane layoutX="25.0" layoutY="25.0" maxHeight="550.0" maxWidth="550.0" minHeight="550.0" minWidth="550.0" prefHeight="550.0" prefWidth="550.0" style="-fx-background-color: #5B6B86; -fx-background-radius: 10px;">
+            <children>
+                <ImageView fitHeight="75.0" fitWidth="75.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
+                <Pane layoutX="25.0" layoutY="75.0" maxHeight="400.0" maxWidth="400.0" minHeight="450.0" minWidth="500.0" prefHeight="400.0" prefWidth="400.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 8px;">
+                    <children>
+                        <Label layoutX="147.0" layoutY="17.0" style="-fx-text-fill: #000000; -fx-font-size: 20; -fx-font-weight: bold;" text="Recuperar Contraseña" />
+                        <Pane layoutX="50.0" layoutY="65.0" maxHeight="300.0" maxWidth="300.0" minHeight="350.0" minWidth="400.0" prefHeight="300.0" prefWidth="300.0" style="-fx-background-color: #091740; -fx-background-radius: 5px;">
+                            <children>
+                                <Pane layoutX="25.0" layoutY="25.0" maxHeight="300.0" maxWidth="300.0" minHeight="300.0" minWidth="350.0" prefHeight="300.0" prefWidth="300.0" style="-fx-background-color: white;">
+                                    <children>
+                                        <Label layoutX="101.0" layoutY="58.0" style="-fx-text-fill: #555555; -fx-font-size: 14;" text="Contraseña Actual" />
+                                        <PasswordField fx:id="currentPasswordField" layoutX="101.0" layoutY="78.0" style="-fx-background-color: transparent; -fx-border-color: #dddddd; -fx-border-width: 0 0 1px 0;" />
+                                        <TextField fx:id="currentPasswordVisibleField" layoutX="101.0" layoutY="158.0" style="-fx-background-color: transparent; -fx-border-color: #dddddd; -fx-border-width: 0 0 1px 0;" visible="false" />
+                                        <Button fx:id="toggleCurrentPasswordButton" layoutX="257.0" layoutY="78.0" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-border-color: #dddddd; -fx-border-radius: 3px;" text="👁" />
+                                        <Label layoutX="100.0" layoutY="123.0" style="-fx-text-fill: #555555; -fx-font-size: 14;" text="Contraseña Nueva" />
+                                        <PasswordField fx:id="newPasswordField" layoutX="101.0" layoutY="145.0" style="-fx-background-color: transparent; -fx-border-color: #dddddd; -fx-border-width: 0 0 1px 0;" />
+                                        <TextField fx:id="newPasswordVisibleField" layoutX="101.0" layoutY="218.0" style="-fx-background-color: transparent; -fx-border-color: #dddddd; -fx-border-width: 0 0 1px 0;" visible="false" />
+                                        <Button fx:id="toggleNewPasswordButton" layoutX="257.0" layoutY="145.0" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-border-color: #dddddd; -fx-border-radius: 3px;" text="👁" />
+                                        <Button fx:id="confirmarButton" layoutX="138.0" layoutY="193.0" mnemonicParsing="false" style="-fx-background-color: #091740; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5px;" text="Confirmar" />
+                                    </children>
+                                </Pane>
+                            </children>
+                        </Pane>
+                        <Button layoutX="19.0" layoutY="20.0" mnemonicParsing="false" text="Regresar" style="-fx-background-color: #091740; -fx-text-fill: white; -fx-font-weight: bold;" />
+                    </children>
+                </Pane>
+                <ImageView fitHeight="60.0" fitWidth="60.0" layoutX="14.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../../../../logo/WhatsApp%20Image%202025-07-23%20at%206.03.46%20PM.jpeg" />
+                    </image></ImageView>
+            </children>
+        </Pane>
+    </children>
+</AnchorPane>
