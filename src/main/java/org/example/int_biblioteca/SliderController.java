@@ -4,14 +4,15 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.HBox;
-import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SliderController {
     @FXML
-    private StackPane sliderContainer;
+    private HBox sliderContainer;
+    @FXML
+    private StackPane slidePane;
     @FXML
     private Button btnIzq;
     @FXML
@@ -32,11 +33,11 @@ public class SliderController {
     private void crearSlides() {
         // Crear y agregar los slides
         Label slide1 = new Label("¡Bienvenido a la Biblioteca!\n\nAquí encontrarás los mejores libros.");
-        slide1.setStyle("-fx-text-fill: white; -fx-font-size: 16px; -fx-alignment: center;");
+        slide1.setStyle("-fx-text-fill: black; -fx-font-size: 16px; -fx-alignment: center;");
         Label slide2 = new Label("Horario de atención:\nLunes a Viernes: 9am - 6pm\nSábados: 10am - 2pm");
-        slide2.setStyle("-fx-text-fill: white; -fx-font-size: 16px; -fx-alignment: center;");
+        slide2.setStyle("-fx-text-fill: black; -fx-font-size: 16px; -fx-alignment: center;");
         Label slide3 = new Label("Novedades:\n- Nueva colección de ciencia ficción\n- Taller de lectura cada jueves");
-        slide3.setStyle("-fx-text-fill: white; -fx-font-size: 16px; -fx-alignment: center;");
+        slide3.setStyle("-fx-text-fill: black; -fx-font-size: 16px; -fx-alignment: center;");
 
         // Agregar los slides a la lista
         slides.add(slide1);

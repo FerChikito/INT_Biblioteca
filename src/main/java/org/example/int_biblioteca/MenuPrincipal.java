@@ -60,7 +60,7 @@ public class MenuPrincipal {
 
     private void cargarSlider() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("slider.fxml")); // Asegúrate de que la ruta sea correcta
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/pruebab/slider.fxml"));
             HBox slider = loader.load();
             sliderContainer.getChildren().add(slider);
         } catch (IOException e) {
