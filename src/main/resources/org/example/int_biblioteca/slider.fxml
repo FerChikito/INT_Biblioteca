@@ -2,25 +2,19 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 
-<HBox alignment="CENTER" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.int_biblioteca.SliderController">
+<HBox fx:id="sliderContainer" alignment="CENTER" prefHeight="100.0" prefWidth="598.0" spacing="10.0" style="-fx-padding: 10;" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.int_biblioteca.SliderController">
     <children>
-        <!-- Botón izquierdo -->
-        <Button fx:id="btnIzq" text="&lt;">
-         <font>
-            <Font size="10.0" />
-         </font></Button>
 
-        <!-- Contenedor del slide (aquí se mostrará el contenido) -->
-        <StackPane fx:id="sliderContainer" prefHeight="200" prefWidth="1000.0">
-            <Label fx:id="slideDefault" text="Slide inicial" />
+        <!-- Botón izquierdo -->
+        <Button fx:id="btnIzq" prefHeight="30.0" prefWidth="30.0" text="&lt;" />
+
+        <!-- Área del slide -->
+        <StackPane fx:id="slidePane" prefHeight="100.0" prefWidth="500.0" style="-fx-background-color: white; -fx-padding: 20; -fx-border-radius: 10; -fx-border-color: #ccc;">
         </StackPane>
 
         <!-- Botón derecho -->
-        <Button fx:id="btnDerch" text="&gt;">
-         <font>
-            <Font size="10.0" />
-         </font></Button>
+        <Button fx:id="btnDerch" prefHeight="30.0" prefWidth="30.0" text="&gt;" />
+
     </children>
 </HBox>
