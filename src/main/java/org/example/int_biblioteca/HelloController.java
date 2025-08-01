@@ -106,7 +106,7 @@ public class HelloController {
 
         for (int i = 0; i < correos.size(); i++) {
             if (correos.get(i).equals(correo) && contraseñas.get(i).equals(pass)) {
-                cambiarEscena("menu-principal.fxml", event);
+                cambiarEscena("/org/example/pruebab/menu-principal.fxml", event);
                 return;
             }
         }
@@ -146,12 +146,16 @@ public class HelloController {
     private void cambiarEscena(String fxml, ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml)); // Cargar la nueva escena
+            if (loader.getLocation() == null) {
+                throw new IOException("No se encontró el archivo FXML: " + fxml);
+            }
             Scene scene = new Scene(loader.load()); // Crear la nueva escena
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow(); // Obtener la ventana actual
             stage.setScene(scene); // Cambiar la escena
             stage.show(); // Mostrar la nueva escena
         } catch (IOException e) {
             e.printStackTrace(); // Imprimir la traza de la excepción en caso de error
+            showAlert(Alert.AlertType.ERROR, "Error", "No se pudo cargar la pantalla: " + fxml);
         }
 
     }
