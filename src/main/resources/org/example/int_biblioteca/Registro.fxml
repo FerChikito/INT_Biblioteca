@@ -23,7 +23,21 @@
             <TextField fx:id="correoField" promptText="Correo electrónico" />
             <TextField fx:id="confirmarCorreoField" promptText="Confirmar correo electrónico" />
 
+            <!-- Contraseña con botón de mostrar/ocultar -->
+            <HBox spacing="5">
+                <PasswordField fx:id="passwordField" promptText="Contraseña" />
+                <Button fx:id="togglePassBtn" onAction="#togglePassword" text="👁" />
+            </HBox>
+            <HBox spacing="5">
+                <PasswordField fx:id="confirmPasswordField" promptText="Confirmar contraseña" />
+                <Button fx:id="toggleConfirmPassBtn" onAction="#toggleConfirmPassword" text="👁" />
+            </HBox>
 
+            <!-- Checkbox de términos -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <CheckBox fx:id="terminosCheck" />
+                <Label text="Aceptar términos y condiciones" />
+            </HBox>
 
             <Button fx:id="registrarBtn" text="Registrar" styleClass="boton-registrar" />
         </children>
