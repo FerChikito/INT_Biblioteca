@@ -15,4 +15,17 @@
     <VBox alignment="TOP_CENTER" spacing="15.0" layoutX="50" layoutY="30">
         <children>
 
+            <Label text="Crear cuenta" styleClass="titulo"/>
 
+            <TextField fx:id="nombreField" promptText="Nombre" />
+            <TextField fx:id="apellidoField" promptText="Apellido" />
+            <DatePicker fx:id="fechaNacimientoPicker" promptText="Fecha de nacimiento" />
+            <TextField fx:id="correoField" promptText="Correo electrónico" />
+            <TextField fx:id="confirmarCorreoField" promptText="Confirmar correo electrónico" />
+
+
+
+            <Button fx:id="registrarBtn" text="Registrar" styleClass="boton-registrar" />
+        </children>
+    </VBox>
+</AnchorPane>
