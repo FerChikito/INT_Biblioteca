@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.*?>
 
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="org.example.int_biblioteca.Registro"
-            prefHeight="400.0" prefWidth="600.0" >
+            fx:controller="org.example.RegistroController"
+            prefWidth="400" prefHeight="600"
+            stylesheets="@estilos.css">
 
-</AnchorPane>
+    <VBox alignment="TOP_CENTER" spacing="15.0" layoutX="50" layoutY="30">
+        <children>
+
+
