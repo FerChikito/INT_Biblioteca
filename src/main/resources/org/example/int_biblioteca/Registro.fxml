@@ -39,6 +39,8 @@
                 <Label text="Aceptar términos y condiciones" />
             </HBox>
 
+            /Falta verificar las contraseñas y el correo electrónico antes de registrar
+
             <Button fx:id="registrarBtn" text="Registrar" styleClass="boton-registrar" />
         </children>
     </VBox>
