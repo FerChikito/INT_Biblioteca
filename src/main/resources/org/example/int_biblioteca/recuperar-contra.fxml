@@ -35,7 +35,7 @@
                 </Pane>
             <ImageView fitHeight="60.0" fitWidth="60.0" layoutX="14.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../../../logo/WhatsApp%20Image%202025-07-23%20at%206.03.46%20PM.jpeg" />
+                  <Image url="@../../../../logo/logo.jpg" />
                </image></ImageView>
             </children>
         </Pane>

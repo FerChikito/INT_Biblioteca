@@ -11,7 +11,7 @@
                 <ImageView fitHeight="75.0" fitWidth="75.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
                 <Pane layoutX="25.0" layoutY="75.0" maxHeight="400.0" maxWidth="400.0" minHeight="450.0" minWidth="500.0" prefHeight="400.0" prefWidth="400.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 8px;">
                     <children>
-                        <Label layoutX="147.0" layoutY="17.0" style="-fx-text-fill: #000000; -fx-font-size: 20; -fx-font-weight: bold;" text="Recuperar Contraseña" />
+                        <Label layoutX="144.0" layoutY="18.0" style="-fx-text-fill: #000000; -fx-font-size: 20; -fx-font-weight: bold;" text="Cambio de Contraseña" />
                         <Pane layoutX="50.0" layoutY="65.0" maxHeight="300.0" maxWidth="300.0" minHeight="350.0" minWidth="400.0" prefHeight="300.0" prefWidth="300.0" style="-fx-background-color: #091740; -fx-background-radius: 5px;">
                             <children>
                                 <Pane layoutX="25.0" layoutY="25.0" maxHeight="300.0" maxWidth="300.0" minHeight="300.0" minWidth="350.0" prefHeight="300.0" prefWidth="300.0" style="-fx-background-color: white;">
@@ -34,7 +34,7 @@
                 </Pane>
                 <ImageView fitHeight="60.0" fitWidth="60.0" layoutX="14.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@../../../../logo/WhatsApp%20Image%202025-07-23%20at%206.03.46%20PM.jpg" />
+                        <Image url="@../../../../logo/logo.jpg" />
                     </image></ImageView>
             </children>
         </Pane>
