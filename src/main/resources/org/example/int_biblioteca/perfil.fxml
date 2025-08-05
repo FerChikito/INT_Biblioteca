@@ -20,7 +20,7 @@
                                 <Pane layoutX="25.0" layoutY="25.0" maxHeight="300.0" maxWidth="300.0" minHeight="300.0" minWidth="550.0" prefHeight="300.0" prefWidth="300.0" style="-fx-background-color: white;">
                                     <children>
                                         <TextField fx:id="currentPasswordVisibleField" layoutX="101.0" layoutY="158.0" style="-fx-background-color: transparent; -fx-border-color: #dddddd; -fx-border-width: 0 0 1px 0;" visible="false" />
-                                        <Label layoutX="128.0" layoutY="198.0" style="-fx-text-fill: #555555; -fx-font-size: 14;" text="Contraseña" />
+                                        <Label layoutX="128.0" layoutY="207.0" style="-fx-text-fill: #555555; -fx-font-size: 14;" text="Contraseña" />
                                         <PasswordField fx:id="newPasswordField" layoutX="127.0" layoutY="226.0" style="-fx-background-color: transparent; -fx-border-color: #dddddd; -fx-border-width: 0 0 1px 0;" />
                                         <TextField fx:id="newPasswordVisibleField" layoutX="101.0" layoutY="218.0" style="-fx-background-color: transparent; -fx-border-color: #dddddd; -fx-border-width: 0 0 1px 0;" visible="false" />
                                         <Button fx:id="toggleNewPasswordButton" layoutX="275.0" layoutY="225.0" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-border-color: #dddddd; -fx-border-radius: 3px;" text="👁" />
@@ -29,17 +29,17 @@
                                             <image>
                                                 <Image url="@../../../../perfil/perfil.png" />
                                             </image></ImageView>
-                                        <Label layoutX="126.0" layoutY="18.0" style="-fx-font-size: 12px; -fx-font-weight: bold;" text="Nombre completo" />
-                                        <TextField layoutX="127.0" layoutY="39.0" promptText="Nombre" style="-fx-background-color: #f9f9f9; -fx-border-color: #ccc; -fx-border-radius: 5px; -fx-background-radius: 5px; -fx-padding: 5 10; -fx-font-size: 13px;" text="Nombre" />
-                                        <TextField layoutX="127.0" layoutY="94.0" promptText="Ejemplo@mail.com" style="-fx-background-color: #f9f9f9; -fx-border-color: #ccc; -fx-border-radius: 5px; -fx-background-radius: 5px; -fx-padding: 5 10; -fx-font-size: 13px;" text="Correo@gmail" />
-                                        <TextField layoutX="127.0" layoutY="159.0" promptText="2024..." style="-fx-background-color: #f9f9f9; -fx-border-color: #ccc; -fx-border-radius: 5px; -fx-background-radius: 5px; -fx-padding: 5 10; -fx-font-size: 13px;" text="20243rd017" />
-                                        <Label layoutX="127.0" layoutY="77.0" style="-fx-font-size: 12px; -fx-font-weight: bold;" text="Correo" />
-                                        <Label layoutX="129.0" layoutY="142.0" style="-fx-font-size: 12px; -fx-font-weight: bold;" text="Marícula" />
+                                        <Label layoutX="126.0" layoutY="16.0" style="-fx-font-size: 12px; -fx-font-weight: bold;" text="Nombre completo" />
+                                        <TextField layoutX="127.0" layoutY="36.0" promptText="Nombre" style="-fx-background-color: #f9f9f9; -fx-border-color: #ccc; -fx-border-radius: 5px; -fx-background-radius: 5px; -fx-padding: 5 10; -fx-font-size: 13px;" text="Nombre" />
+                                        <TextField layoutX="127.0" layoutY="99.0" promptText="Ejemplo@mail.com" style="-fx-background-color: #f9f9f9; -fx-border-color: #ccc; -fx-border-radius: 5px; -fx-background-radius: 5px; -fx-padding: 5 10; -fx-font-size: 13px;" text="Correo@gmail" />
+                                        <TextField layoutX="127.0" layoutY="162.0" promptText="2024..." style="-fx-background-color: #f9f9f9; -fx-border-color: #ccc; -fx-border-radius: 5px; -fx-background-radius: 5px; -fx-padding: 5 10; -fx-font-size: 13px;" text="20243rd017" />
+                                        <Label layoutX="127.0" layoutY="81.0" style="-fx-font-size: 12px; -fx-font-weight: bold;" text="Correo" />
+                                        <Label layoutX="129.0" layoutY="144.0" style="-fx-font-size: 12px; -fx-font-weight: bold;" text="Marícula" />
                                         <Label layoutX="339.0" layoutY="18.0" style="-fx-font-size: 12px; -fx-font-weight: bold;" text="Fecha de nacimiento" />
                                         <Label layoutX="339.0" layoutY="77.0" style="-fx-font-size: 12px; -fx-font-weight: bold;" text="Número telefonico" />
                                         <TextField layoutX="339.0" layoutY="39.0" promptText="00/00/00" style="-fx-background-color: #f9f9f9; -fx-border-color: #ccc; -fx-border-radius: 5px; -fx-background-radius: 5px; -fx-padding: 5 10; -fx-font-size: 13px;" text="12/12/2006" />
                                         <TextField layoutX="339.0" layoutY="94.0" promptText="77712392846" style="-fx-background-color: #f9f9f9; -fx-border-color: #ccc; -fx-border-radius: 5px; -fx-background-radius: 5px; -fx-padding: 5 10; -fx-font-size: 13px;" text="552763726" />
-                                        <Label layoutX="131.0" layoutY="269.0" style="-fx-text-fill: #0066cc; -fx-font-size: 12px;" text="Cambio de contraseña" />
+                                        <Label layoutX="131.0" layoutY="266.0" style="-fx-text-fill: #0066cc; -fx-font-size: 12px;" text="Cambio de contraseña" />
                                     </children>
                                 </Pane>
                             </children>
