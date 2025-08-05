@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox fx:id="sliderContainer" alignment="CENTER" prefHeight="100.0" prefWidth="598.0" spacing="10.0" style="-fx-padding: 10;" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.int_biblioteca.SliderController">
+    <children>
+
+        <!-- Botón izquierdo -->
+        <Button fx:id="btnIzq" prefHeight="30.0" prefWidth="30.0" text="&lt;" />
+
+        <!-- Área del slide -->
+        <StackPane fx:id="slidePane" prefHeight="100.0" prefWidth="500.0" style="-fx-background-color: white; -fx-padding: 20; -fx-border-radius: 10; -fx-border-color: #ccc;">
+        </StackPane>
+
+        <!-- Botón derecho -->
+        <Button fx:id="btnDerch" prefHeight="30.0" prefWidth="30.0" text="&gt;" />
+
+    </children>
+</HBox>

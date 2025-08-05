@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="522.0" prefWidth="904.0" style="-fx-background-color: #5B6B86;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.int_biblioteca.MenuPrincipal">
+    <left>
+        <VBox prefHeight="400.0" prefWidth="144.0" style="-fx-background-color: #091740; -fx-border-color: #5B6B86; -fx-border-width: 10px 0px 0px 0px;" BorderPane.alignment="CENTER">
+            <children>
+                <Button fx:id="botonMenu" mnemonicParsing="false" onMouseClicked="#handleBotonMenu" prefHeight="66.0" prefWidth="144.0" style="-fx-background-color: #091740; -fx-border-color: #ffffff; -fx-border-width: 0px 0px 2px 0px;" text="Menú ☰" textFill="WHITE">
+                    <font>
+                        <Font size="20.0" />
+                    </font>
+                </Button>
+                <Button fx:id="botonPerfil" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onMouseClicked="#handleBotonPerfil" prefHeight="66.0" prefWidth="144.0" style="-fx-background-color: #091740; -fx-border-color: #ffffff; -fx-border-width: 0px 0px 2px 0px;" text="Perfil 👤" textFill="WHITE">
+                    <font>
+                        <Font size="13.0" />
+                    </font>
+                </Button>
+                <Button fx:id="botonCatalogoL" layoutX="10.0" layoutY="76.0" mnemonicParsing="false" onMouseClicked="#handleBotonCatalogoL" prefHeight="66.0" prefWidth="144.0" style="-fx-background-color: #091740; -fx-border-color: #ffffff; -fx-border-width: 0px 0px 2px 0px;" text="Catalogo de Libros" textFill="WHITE">
+                    <font>
+                        <Font size="13.0" />
+                    </font>
+                </Button>
+            </children>
+        </VBox>
+    </left>
+    <center>
+        <AnchorPane prefHeight="427.0" prefWidth="110.0" style="-fx-border-color: #5B6B86; -fx-background-color: #091740; -fx-border-width: 10px 0px 0px 10px;" BorderPane.alignment="CENTER">
+            <children>
+                <VBox alignment="CENTER" layoutX="23.0" layoutY="14.0" prefHeight="110.0" prefWidth="666.0" style="-fx-background-color: #ffffff;" translateY="20.0">
+                    <children>
+                        <HBox fx:id="sliderContainer" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" />
+                    </children>
+                </VBox>
+            <VBox fx:id="infoP" alignment="CENTER" layoutX="23.0" layoutY="166.0" prefHeight="200.0" prefWidth="668.0" style="-fx-background-color: #fff;" />
+            </children></AnchorPane>
+    </center>
+    <!-- BARRA SUPERIOR CON BUSCADOR -->
+    <top>
+        <HBox alignment="CENTER" spacing="10.0" style="-fx-padding: 10 20; -fx-background-color: #1B2D4F; -fx-border-color: #5B6B86;">
+            <children>
+                <ImageView fitHeight="30.0" fitWidth="30.0" translateX="-250.0">
+                    <image>
+                        <Image url="@../../../Logo/LogoB.jpg" />
+                    </image>
+                </ImageView>
+
+                <TextField fx:id="buscarField" prefWidth="250.0" promptText="Buscar" style="-fx-background-color: #ffffff; -fx-background-radius: 5;" />
+                <Button mnemonicParsing="false" style="-fx-background-color: #0A163A; -fx-text-fill: white;" text="🔍" />
+            </children>
+        </HBox>
+    </top>
+    <right>
+        <VBox prefHeight="427.0" prefWidth="40.0" BorderPane.alignment="CENTER" />
+    </right>
+    <bottom>
+        <VBox prefHeight="44.0" prefWidth="600.0" BorderPane.alignment="CENTER" />
+    </bottom>
+</BorderPane>
