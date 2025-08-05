@@ -23,8 +23,11 @@
                   prefHeight="400.0" prefWidth="400.0"
                   style="-fx-background-color: #FFFFFF; -fx-background-radius: 8px;">                    <children>
                         <Label layoutX="144.0" layoutY="18.0" text="Cambio de Contraseña" />
-                        <Pane layoutX="50.0" layoutY="65.0" maxHeight="300.0" maxWidth="300.0" minHeight="350.0" minWidth="400.0" prefHeight="300.0" prefWidth="300.0">
-                            <children>
+                <Pane layoutX="50.0" layoutY="65.0"
+                      maxHeight="300.0" maxWidth="300.0"
+                      minHeight="350.0" minWidth="400.0"
+                      prefHeight="300.0" prefWidth="300.0"
+                      style="-fx-background-color: #091740; -fx-background-radius: 5px;">                            <children>
                                 <Pane layoutX="25.0" layoutY="25.0" maxHeight="300.0" maxWidth="300.0" minHeight="300.0" minWidth="350.0" prefHeight="300.0" prefWidth="300.0">
                                     <children>
                                         <Label layoutX="101.0" layoutY="58.0" text="Contraseña Actual" />
