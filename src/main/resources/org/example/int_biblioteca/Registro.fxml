@@ -10,7 +10,7 @@
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.example.RegistroController"
             prefWidth="400" prefHeight="600"
-            stylesheets="@estilos.css">
+            stylesheets="@styles/estilos.css">
 
     <VBox alignment="TOP_CENTER" spacing="15.0" layoutX="50" layoutY="30">
         <children>
