@@ -27,4 +27,8 @@ public class RegistroController {
                 && !confirmarCorreoField.getText().trim().isEmpty()
                 && !passwordField.getText().trim().isEmpty()
                 && !confirmPasswordField.getText().trim().isEmpty();
+
+        boolean correosIguales = correoField.getText().equals(confirmarCorreoField.getText());
+        boolean contrasIguales = passwordField.getText().equals(confirmPasswordField.getText());
+
     }
