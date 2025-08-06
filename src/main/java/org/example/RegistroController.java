@@ -32,3 +32,17 @@ public class RegistroController {
         boolean contrasIguales = passwordField.getText().equals(confirmPasswordField.getText());
 
     }
+
+    @FXML
+    public void togglePassword() {
+        passwordVisible = !passwordVisible;
+        togglePassBtn.setText(passwordVisible ? "🙈" : "👁");
+        // Se puede implementar lógica con TextField si deseas visibilidad real
+    }
+
+    @FXML
+    public void toggleConfirmPassword() {
+        confirmPasswordVisible = !confirmPasswordVisible;
+        toggleConfirmPassBtn.setText(confirmPasswordVisible ? "🙈" : "👁");
+    }
+}
