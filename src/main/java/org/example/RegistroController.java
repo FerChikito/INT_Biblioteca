@@ -22,7 +22,7 @@ public class RegistroController {
         validarFormulario(); // Inicializa el botón deshabilitado
         boolean todosLlenos = !nombreField.getText().trim().isEmpty()
                 && !apellidoField.getText().trim().isEmpty()
-                && fechaNacimientoPicker.getValue() != null
+                && fechaNacimientoPicker.getValue() != NULL
                 && !correoField.getText().trim().isEmpty()
                 && !confirmarCorreoField.getText().trim().isEmpty()
                 && !passwordField.getText().trim().isEmpty()
