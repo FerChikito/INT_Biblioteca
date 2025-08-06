@@ -16,3 +16,8 @@ public class RegistroController {
     @FXML private Button registrarBtn;
     @FXML private Button togglePassBtn;
     @FXML private Button toggleConfirmPassBtn;
+
+    @FXML
+    public void initialize() {
+        validarFormulario(); // Inicializa el botón deshabilitado
+    }
