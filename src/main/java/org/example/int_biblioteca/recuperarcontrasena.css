@@ -1,0 +1,75 @@
+/* Estilo para el AnchorPane principal */
+.root {
+    -fx-background-color: white;
+}
+
+/* Primer Pane (exterior) - Color #5B6B86 */
+.pane {
+    -fx-background-color: #5B6B86;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);
+}
+
+/* Segundo Pane (intermedio) - Blanco */
+.pane > .pane {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+}
+
+/* Tercer Pane (más interno) - Color #091740 */
+.pane > .pane > .pane > .pane > .pane {
+    -fx-background-color: #091740;
+    -fx-background-radius: 5px;
+}
+
+/* Estilos para los labels */
+.label {
+    -fx-font-family: "Arial";
+    -fx-text-fill: #333333;
+}
+
+.label.title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+/* Campos de texto */
+.text-field, .password-field {
+    -fx-background-color: white;
+    -fx-border-color: #dddddd;
+    -fx-border-radius: 3px;
+    -fx-padding: 5px;
+    -fx-font-size: 14px;
+}
+
+.text-field:focused, .password-field:focused {
+    -fx-border-color: #4a90e2;
+}
+
+/* Botón Confirmar */
+.button {
+    -fx-background-color: #4a90e2;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5px;
+    -fx-padding: 8px 20px;
+}
+
+.button:hover {
+    -fx-background-color: #3a7bc8;
+}
+
+/* Botón de ojo para contraseña */
+.password-toggle {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+    /* -fx-graphic: url('eye-closed.png'); Imagen por defecto (ojo cerrado) */
+}
+
+.password-toggle:selected {
+   /*-fx-graphic: url('eye-open.png'); Imagen cuando está activo (ojo abierto)*/
+}

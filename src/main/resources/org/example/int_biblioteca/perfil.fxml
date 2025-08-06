@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="600.0" maxWidth="600.0" minHeight="600.0" minWidth="750.0" prefHeight="600.0" prefWidth="600.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.int_biblioteca.HelloController">
+    <children>
+        <Pane layoutX="25.0" layoutY="25.0" maxHeight="550.0" maxWidth="550.0" minHeight="550.0" minWidth="700.0" prefHeight="550.0" prefWidth="550.0" style="-fx-background-color: #5B6B86; -fx-background-radius: 10px;">
+            <children>
+                <ImageView fitHeight="60.0" fitWidth="60.0" layoutX="14.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../../logo/logo.jpg" />
+               </image></ImageView>
+                <Pane layoutX="25.0" layoutY="75.0" maxHeight="400.0" maxWidth="400.0" minHeight="450.0" minWidth="650.0" prefHeight="400.0" prefWidth="400.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 8px;">
+                    <children>
+                        <Label layoutX="214.0" layoutY="18.0" style="-fx-text-fill: #000000; -fx-font-size: 20; -fx-font-weight: bold;" text="Bienvenido a tu usuario" />
+                        <Pane layoutX="25.0" layoutY="50.0" maxHeight="300.0" maxWidth="300.0" minHeight="350.0" minWidth="600.0" prefHeight="300.0" prefWidth="300.0" style="-fx-background-color: #091740; -fx-background-radius: 5px;">
+                            <children>
+                                <Pane layoutX="25.0" layoutY="25.0" maxHeight="300.0" maxWidth="300.0" minHeight="300.0" minWidth="550.0" prefHeight="300.0" prefWidth="300.0" style="-fx-background-color: white;">
+                                    <children>
+                                        <TextField fx:id="currentPasswordVisibleField" layoutX="101.0" layoutY="158.0" style="-fx-background-color: transparent; -fx-border-color: #dddddd; -fx-border-width: 0 0 1px 0;" visible="false" />
+                                        <Label layoutX="128.0" layoutY="207.0" style="-fx-text-fill: #555555; -fx-font-size: 14;" text="Contraseña" />
+                                        <PasswordField fx:id="newPasswordField" layoutX="127.0" layoutY="226.0" style="-fx-background-color: transparent; -fx-border-color: #dddddd; -fx-border-width: 0 0 1px 0;" />
+                                        <TextField fx:id="newPasswordVisibleField" layoutX="101.0" layoutY="218.0" style="-fx-background-color: transparent; -fx-border-color: #dddddd; -fx-border-width: 0 0 1px 0;" visible="false" />
+                                        <Button fx:id="toggleNewPasswordButton" layoutX="275.0" layoutY="225.0" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-border-color: #dddddd; -fx-border-radius: 3px;" text="👁" />
+                                        <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="20.0" layoutY="18.0" pickOnBounds="true" preserveRatio="true" />
+                                        <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+                                            <image>
+                                                <Image url="@../../../../perfil/perfil.png" />
+                                            </image></ImageView>
+                                        <Label layoutX="126.0" layoutY="16.0" style="-fx-font-size: 12px; -fx-font-weight: bold;" text="Nombre completo" />
+                                        <TextField layoutX="127.0" layoutY="36.0" promptText="Nombre" style="-fx-background-color: #f9f9f9; -fx-border-color: #ccc; -fx-border-radius: 5px; -fx-background-radius: 5px; -fx-padding: 5 10; -fx-font-size: 13px;" text="Nombre" />
+                                        <TextField layoutX="127.0" layoutY="99.0" promptText="Ejemplo@mail.com" style="-fx-background-color: #f9f9f9; -fx-border-color: #ccc; -fx-border-radius: 5px; -fx-background-radius: 5px; -fx-padding: 5 10; -fx-font-size: 13px;" text="Correo@gmail" />
+                                        <TextField layoutX="127.0" layoutY="162.0" promptText="2024..." style="-fx-background-color: #f9f9f9; -fx-border-color: #ccc; -fx-border-radius: 5px; -fx-background-radius: 5px; -fx-padding: 5 10; -fx-font-size: 13px;" text="20243rd017" />
+                                        <Label layoutX="127.0" layoutY="81.0" style="-fx-font-size: 12px; -fx-font-weight: bold;" text="Correo" />
+                                        <Label layoutX="129.0" layoutY="144.0" style="-fx-font-size: 12px; -fx-font-weight: bold;" text="Marícula" />
+                                        <Label layoutX="339.0" layoutY="18.0" style="-fx-font-size: 12px; -fx-font-weight: bold;" text="Fecha de nacimiento" />
+                                        <Label layoutX="339.0" layoutY="77.0" style="-fx-font-size: 12px; -fx-font-weight: bold;" text="Número telefonico" />
+                                        <TextField layoutX="339.0" layoutY="39.0" promptText="00/00/00" style="-fx-background-color: #f9f9f9; -fx-border-color: #ccc; -fx-border-radius: 5px; -fx-background-radius: 5px; -fx-padding: 5 10; -fx-font-size: 13px;" text="12/12/2006" />
+                                        <TextField layoutX="339.0" layoutY="94.0" promptText="77712392846" style="-fx-background-color: #f9f9f9; -fx-border-color: #ccc; -fx-border-radius: 5px; -fx-background-radius: 5px; -fx-padding: 5 10; -fx-font-size: 13px;" text="552763726" />
+                                        <Label layoutX="131.0" layoutY="266.0" style="-fx-text-fill: #0066cc; -fx-font-size: 12px;" text="Cambio de contraseña" />
+                                    </children>
+                                </Pane>
+                            </children>
+                        </Pane>
+                        <Button layoutX="19.0" layoutY="20.0" mnemonicParsing="false" style="-fx-background-color: #091740; -fx-text-fill: white; -fx-font-weight: bold;" text="Regresar" />
+                    </children>
+                </Pane>
+
+            </children>
+        </Pane>
+    </children>
+</AnchorPane>
