@@ -2,10 +2,6 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.text.*?>
-
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.example.RegistroController"
@@ -13,35 +9,32 @@
             stylesheets="@styles/estilos.css">
 
     <VBox alignment="TOP_CENTER" spacing="15.0" layoutX="50" layoutY="30">
-        <children>
+        <Label text="Crear cuenta" styleClass="titulo"/>
 
-            <Label text="Crear cuenta" styleClass="titulo"/>
+        <TextField fx:id="nombreField" promptText="Nombre"/>
+        <TextField fx:id="apellidoField" promptText="Apellido"/>
+        <DatePicker fx:id="fechaNacimientoPicker" promptText="Fecha de nacimiento"/>
+        <TextField fx:id="correoField" promptText="Correo electrónico"/>
+        <TextField fx:id="confirmarCorreoField" promptText="Confirmar correo electrónico"/>
 
-            <TextField fx:id="nombreField" promptText="Nombre" />
-            <TextField fx:id="apellidoField" promptText="Apellido" />
-            <DatePicker fx:id="fechaNacimientoPicker" promptText="Fecha de nacimiento" />
-            <TextField fx:id="correoField" promptText="Correo electrónico" />
-            <TextField fx:id="confirmarCorreoField" promptText="Confirmar correo electrónico" />
+        <!-- Contraseña con botón de mostrar/ocultar -->
+        <HBox spacing="5">
+            <PasswordField fx:id="passwordField" promptText="Contraseña"/>
+            <Button fx:id="togglePassBtn" onAction="#togglePassword" text="👁"/>
+        </HBox>
+        <HBox spacing="5">
+            <PasswordField fx:id="confirmPasswordField" promptText="Confirmar contraseña"/>
+            <Button fx:id="toggleConfirmPassBtn" onAction="#toggleConfirmPassword" text="👁"/>
+        </HBox>
 
-            <!-- Contraseña con botón de mostrar/ocultar -->
-            <HBox spacing="5">
-                <PasswordField fx:id="passwordField" promptText="Contraseña" />
-                <Button fx:id="togglePassBtn" onAction="#togglePassword" text="👁" />
-            </HBox>
-            <HBox spacing="5">
-                <PasswordField fx:id="confirmPasswordField" promptText="Confirmar contraseña" />
-                <Button fx:id="toggleConfirmPassBtn" onAction="#toggleConfirmPassword" text="👁" />
-            </HBox>
+        <!-- Checkbox de términos -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <CheckBox fx:id="terminosCheck"/>
+            <Label text="Aceptar términos y condiciones"/>
+        </HBox>
 
-            <!-- Checkbox de términos -->
-            <HBox spacing="10" alignment="CENTER_LEFT">
-                <CheckBox fx:id="terminosCheck" />
-                <Label text="Aceptar términos y condiciones" />
-            </HBox>
+        /Falta verificar las contraseñas y el correo electrónico antes de registrar
 
-            /Falta verificar las contraseñas y el correo electrónico antes de registrar
-
-            <Button fx:id="registrarBtn" text="Registrar" styleClass="boton-registrar" />
-        </children>
+        <Button fx:id="registrarBtn" text="Registrar" styleClass="boton-registrar"/>
     </VBox>
 </AnchorPane>

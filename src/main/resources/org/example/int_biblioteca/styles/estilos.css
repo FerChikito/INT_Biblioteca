@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+
+.root {
+    -fx-font-family: 'Open Sans';
+    -fx-background-color: #F2F2F2;
+}
+
+.titulo {
+    -fx-font-size: 22px;
+    -fx-text-fill: #091740;
+    -fx-font-weight: bold;
+    -fx-padding: 10 0 20 0;
+}
+
+.boton-registrar {
+    -fx-background-color: #091740;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-pref-width: 200;
+    -fx-padding: 10px;
+    -fx-background-radius: 5;
+}
