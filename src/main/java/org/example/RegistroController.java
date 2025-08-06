@@ -17,12 +17,19 @@ public class RegistroController {
     @FXML private Button togglePassBtn;
     @FXML private Button toggleConfirmPassBtn;
 
+    private boolean passwordVisible = false;
+    private boolean confirmPasswordVisible = false;
+
     @FXML
     public void initialize() {
         validarFormulario(); // Inicializa el botón deshabilitado
+    }
+
+    @FXML
+    public void validarFormulario() {
         boolean todosLlenos = !nombreField.getText().trim().isEmpty()
                 && !apellidoField.getText().trim().isEmpty()
-                && fechaNacimientoPicker.getValue() != NULL
+                && fechaNacimientoPicker.getValue() != null
                 && !correoField.getText().trim().isEmpty()
                 && !confirmarCorreoField.getText().trim().isEmpty()
                 && !passwordField.getText().trim().isEmpty()
@@ -30,19 +37,21 @@ public class RegistroController {
 
         boolean correosIguales = correoField.getText().equals(confirmarCorreoField.getText());
         boolean contrasIguales = passwordField.getText().equals(confirmPasswordField.getText());
+        boolean terminosAceptados = terminosCheck.isSelected();
 
+        registrarBtn.setDisable(!(todosLlenos && correosIguales && contrasIguales && terminosAceptados));
     }
 
     @FXML
     public void togglePassword() {
         passwordVisible = !passwordVisible;
-        togglePassBtn.setText(passwordVisible ? "🙈" : "👁");
+        togglePassBtn.setText(passwordVisible ? " " : "👁");
         // Se puede implementar lógica con TextField si deseas visibilidad real
     }
 
     @FXML
     public void toggleConfirmPassword() {
         confirmPasswordVisible = !confirmPasswordVisible;
-        toggleConfirmPassBtn.setText(confirmPasswordVisible ? "🙈" : "👁");
+        toggleConfirmPassBtn.setText(confirmPasswordVisible ? " " : "👁");
     }
 }
