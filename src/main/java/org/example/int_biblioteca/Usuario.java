@@ -2,12 +2,12 @@ package org.example.int_biblioteca;
 
 public class Usuario {
     private String nombre;
-    private String contraseña;
+    private String contrasenia;
     private Rol rol;
 
-    public Usuario(String nombre, String contraseña, Rol rol) {
+    public Usuario(String nombre, String contrasenia, Rol rol) {
         this.nombre = nombre;
-        this.contraseña = contraseña;
+        this.contrasenia = contrasenia;
         this.rol = rol;
     }
 
@@ -15,8 +15,8 @@ public class Usuario {
         return nombre;
     }
 
-    public String getContraseña() {
-        return contraseña;
+    public String getContrasenia() {
+        return contrasenia;
     }
 
     public Rol getRol() {

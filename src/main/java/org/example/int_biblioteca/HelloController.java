@@ -110,7 +110,7 @@ public class HelloController {
         String pass = passwordField.getText();
 
         for (Usuario usuario : usuarios) {
-            if (usuario.getNombre().equals(correo) && usuario.getContraseña().equals(pass)) {
+            if (usuario.getNombre().equals(correo) && usuario.getContrasenia().equals(pass)) {
                 try {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/int_biblioteca/menu-principal.fxml"));
                     Scene scene = new Scene(loader.load());
