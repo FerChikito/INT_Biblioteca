@@ -10,6 +10,7 @@ import javafx.scene.Node;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class HelloController {
     @FXML
@@ -90,33 +91,54 @@ public class HelloController {
     }
 
     // Simulación de base de datos
-    private static final ArrayList<String> correos = new ArrayList<>();
-    private static final ArrayList<String> contraseñas = new ArrayList<>();
+    private static final List<Usuario> usuarios = new ArrayList<>();
 
     static {
-        correos.add("admin");
-        contraseñas.add("1234");
+        usuarios.add(new Usuario("admin", "1234", Rol.ADMIN));
+        usuarios.add(new Usuario("fer", "111", Rol.USUARIO));
+    }
+    private static Usuario usuarioActual;
+
+    public static Usuario getUsuarioActual() {
+        return usuarioActual;
     }
 
     // LOGIN
     @FXML
     protected void handleLogin(ActionEvent event) {
-        String correo = usernameField.getText(); // Obtener el correo del campo de texto
-        String pass = passwordField.getText(); // Obtener la contraseña del campo de texto
+        String correo = usernameField.getText();
+        String pass = passwordField.getText();
 
-        for (int i = 0; i < correos.size(); i++) {
-            if (correos.get(i).equals(correo) && contraseñas.get(i).equals(pass)) {
-                cambiarEscena("/org/example/pruebab/menu-principal.fxml", event);
+        for (Usuario usuario : usuarios) {
+            if (usuario.getNombre().equals(correo) && usuario.getContraseña().equals(pass)) {
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/int_biblioteca/menu-principal.fxml"));
+                    Scene scene = new Scene(loader.load());
+
+                    // Aquí pasas el usuario al controlador del menú
+                    MenuPrincipal controller = loader.getController();
+                    controller.setUsuario(usuario);
+
+                    // Luego muestras la escena
+                    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                    stage.setScene(scene);
+                    stage.show();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    showAlert(Alert.AlertType.ERROR, "Error", "No se pudo cargar el menú");
+                }
                 return;
             }
         }
-        showAlert(Alert.AlertType.ERROR, "Error", "Usuario o contraseña incorrectos"); // Mostrar error
+
+        showAlert(Alert.AlertType.ERROR, "Error", "Usuario o contraseña incorrectos");
     }
 
     // Desde login, ir a registro
     @FXML
     protected void handleRegister(ActionEvent event) {
-        cambiarEscena("registrar.fxml", event);
+        cambiarEscena("Registro.fxml", event);
     }
 
     // Desde registro, guardar usuario
@@ -131,9 +153,9 @@ public class HelloController {
             return;
         }
 
-        correos.add(correo);
-        contraseñas.add(pass);
-        showAlert(Alert.AlertType.ERROR, "Error", "Las contraseñas no coinciden");
+        // Aquí puedes decidir si registrar como usuario normal
+        usuarios.add(new Usuario(correo, pass, Rol.USUARIO));
+        showAlert(Alert.AlertType.INFORMATION, "Registro", "Usuario registrado con éxito");
         cambiarEscena("hello-view.fxml", event);
     }
 

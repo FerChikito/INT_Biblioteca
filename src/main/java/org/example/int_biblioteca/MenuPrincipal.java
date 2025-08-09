@@ -2,12 +2,11 @@ package org.example.int_biblioteca;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.control.*;
 import javafx.event.ActionEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
@@ -29,6 +28,41 @@ public class MenuPrincipal {
     private HBox sliderContainer; // Contenedor para el slider
     @FXML
     private VBox infoP;
+    @FXML
+    private Button botonEditar;
+    @FXML
+    private Button editarInfoBtn;
+    @FXML
+    private Button editarSliderBtn;
+    @FXML
+    private Button editarLibrosBtn;
+    @FXML
+    private BorderPane rootPane; // tu BorderPane raíz
+    private Node originalCenter;                  // guarda aquí el centro original
+    @FXML
+    private StackPane centerStack;
+    @FXML
+    private AnchorPane sliderView;
+    @FXML
+    private VBox infoView;
+
+    // Usuario que inició sesión
+    private Usuario usuarioActual;
+
+    // Datos simulados de libros
+    private List<Libro> libros = new ArrayList<>(List.of(
+            new Libro("Cien años de soledad", "Gabriel García Márquez", "978-3-16-148410-0"),
+            new Libro("1984", "George Orwell", "978-0-452-28423-4"),
+            new Libro("El principito", "Antoine de Saint-Exupéry", "978-84-206-5352-9"),
+            new Libro("Harry Potter y la piedra filosofal", "J.K. Rowling", "978-0-7475-3269-9"),
+            new Libro("Fahrenheit 451", "Ray Bradbury", "978-0-7432-4722-1")
+    ));
+
+    // Setter para recibir el usuario desde el login
+    public void setUsuario(Usuario usuario) {
+        this.usuarioActual = usuario;
+        mostrarBotonesDeEdicion(); // Aquí ya tenemos el usuario y podemos mostrar los botones
+    }
 
     // Método que se ejecuta al hacer clic en el botón de menú
     @FXML
@@ -55,12 +89,15 @@ public class MenuPrincipal {
     @FXML
     public void initialize() {
         cargarSlider();
-        cargarTexto(); // Llama a cargarTexto aquí
+        cargarTexto(); // Llama a cargarTexto aquí// Luego guarda el contenido original del centro
+        originalCenter = rootPane.getCenter();
+
+        mostrarBotonesDeEdicion();
     }
 
     private void cargarSlider() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/pruebab/slider.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("slider.fxml"));
             HBox slider = loader.load();
             sliderContainer.getChildren().add(slider);
         } catch (IOException e) {
@@ -69,6 +106,7 @@ public class MenuPrincipal {
 
 
     }
+
     private void cargarTexto() {
         // Limpiar el VBox
         infoP.getChildren().clear();
@@ -86,4 +124,107 @@ public class MenuPrincipal {
         // Añadir al VBox
         infoP.getChildren().addAll(titulo, contenido, horario, prestamos, contacto);
     }
-}
+
+    // Buscar libros por título, autor o ISBN
+    @FXML
+    private void buscarLibro() {
+        String query = buscarField.getText().toLowerCase().trim();
+        infoP.getChildren().clear();
+
+        if (query.isEmpty()) {
+            cargarTexto();
+            return;
+        }
+
+
+        List<Libro> resultados = libros.stream()
+                .filter(libro -> libro.getTitulo().toLowerCase().contains(query)
+                        || libro.getAutor().toLowerCase().contains(query)
+                        || libro.getIsbn().toLowerCase().contains(query))
+                .toList();
+
+        if (resultados.isEmpty()) {
+            Label noResultado = new Label("No se encontraron libros.");
+            noResultado.setStyle("-fx-font-style: italic;");
+            infoP.getChildren().add(noResultado);
+        } else {
+            for (Libro libro : resultados) {
+                String texto = libro.getTitulo() + " | " + libro.getAutor() + " | ISBN: " + libro.getIsbn();
+                Label label = new Label("• " + texto);
+                label.setStyle("-fx-font-size: 14px;");
+                infoP.getChildren().add(label);
+            }
+        }
+    }
+
+    // Muestra botón de edición solo si es admin
+    private void mostrarBotonesDeEdicion() {
+        boolean esAdmin = usuarioActual != null && usuarioActual.getRol() == Rol.ADMIN;
+
+        if (editarInfoBtn != null) editarInfoBtn.setVisible(esAdmin);
+        if (editarSliderBtn != null) editarSliderBtn.setVisible(esAdmin);
+        if (editarLibrosBtn != null) editarLibrosBtn.setVisible(esAdmin);
+        if (botonEditar != null) botonEditar.setVisible(esAdmin); // si también usas este
+    }
+
+    private void showPane(Node pane) {
+        for (Node child : centerStack.getChildren()) {
+            child.setVisible(child == pane);
+        }
+    }
+
+    // Acciones para botones de edición (solo admin)
+    @FXML
+    private void handleEditarInfo(ActionEvent event) {
+        if (usuarioActual == null || usuarioActual.getRol() != Rol.ADMIN) return;
+
+        rootPane.setCenter(originalCenter);
+        // luego tu lógica de edición en infoP…
+        infoP.getChildren().clear();
+        TextArea editor = new TextArea("…");
+        Button guardar = new Button("Guardar");
+        guardar.setOnAction(e -> {
+            infoP.getChildren().setAll(new Label(editor.getText()));
+        });
+        infoP.getChildren().setAll(editor, guardar);
+    }
+
+    @FXML
+    private void handleEditarSlider(ActionEvent event) {
+        if (usuarioActual == null || usuarioActual.getRol() != Rol.ADMIN) return;
+
+        // Antes de editar slider, vuelve al centro original
+        rootPane.setCenter(originalCenter);
+
+        // Ahora sí toca tu lógica de edición dentro del sliderContainer
+        sliderContainer.getChildren().clear();
+        TextField nuevoTexto = new TextField("Texto del slider…");
+        Button guardar = new Button("Guardar");
+        guardar.setOnAction(e -> {
+            sliderContainer.getChildren().setAll(new Label(nuevoTexto.getText()));
+        });
+        sliderContainer.getChildren().setAll(nuevoTexto, guardar);
+    }
+    @FXML
+    private void handleEditarLibros(ActionEvent event) {
+        if (usuarioActual == null || usuarioActual.getRol() != Rol.ADMIN) return;
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("crud-libros.fxml"));
+            Parent crudView = loader.load();
+            rootPane.setCenter(crudView);
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "No se pudo cargar la vista de edición de libros.");
+        }
+    }
+
+    // Utilidad para mostrar alertas
+    private void showAlert(Alert.AlertType type, String title, String content) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+    }

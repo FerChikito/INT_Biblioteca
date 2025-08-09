@@ -48,7 +48,7 @@
                     </image>
                 </ImageView>
 
-                <TextField fx:id="buscarField" prefWidth="250.0" promptText="Buscar" style="-fx-background-color: #ffffff; -fx-background-radius: 5;" />
+                <TextField fx:id="buscarField" onAction="#buscarLibro" prefWidth="250.0" promptText="Buscar" style="-fx-background-color: #ffffff; -fx-background-radius: 5;" />
                 <Button mnemonicParsing="false" style="-fx-background-color: #0A163A; -fx-text-fill: white;" text="🔍" />
             </children>
         </HBox>
