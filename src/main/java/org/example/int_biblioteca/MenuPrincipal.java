@@ -119,6 +119,7 @@ public class MenuPrincipal {
         cargarSlider();
         cargarTexto(); // Llama a cargarTexto aquí// Luego guarda el contenido original del centro
         originalCenter = rootPane.getCenter();
+        aplicarPermisosPorRol(); // por si ya hay usuario seteado antes
         // Que no ocupen espacio cuando estén ocultos:
         if (botonUsuarios   != null) botonUsuarios.managedProperty().bind(botonUsuarios.visibleProperty());
         if (editarInfoBtn   != null) editarInfoBtn.managedProperty().bind(editarInfoBtn.visibleProperty());
@@ -312,15 +313,50 @@ public class MenuPrincipal {
     }
 
     @FXML
-    private void abrirUsuarios(ActionEvent event) {
+    private void abrirUsuarios(javafx.event.ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("crud-usuarios.fxml"));
             Parent vista = loader.load();
+            CrudUsuariosController ctrl = loader.getController();
+            ctrl.setRolActual(usuarioActual != null ? usuarioActual.getRol() : Rol.USUARIO); // <- aquí se recarga UNA vez
             rootPane.setCenter(vista);
-        } catch (IOException e) {
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Usuarios", "No se pudo cargar Usuarios:\n" + e.getMessage());
             e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Error", "No se pudo cargar la vista de usuarios.");
         }
+    }
+
+    private void setVis(Button b, boolean visible) {
+        if (b == null) return;
+        b.setVisible(visible);
+        b.setManaged(visible); // que no deje hueco
+    }
+
+    private void aplicarPermisosPorRol() {
+        if (usuarioActual == null) {
+            setVis(botonUsuarios, false);
+            setVis(editarInfoBtn, false);
+            setVis(editarSliderBtn, false);
+            setVis(editarLibrosBtn, false);
+            return;
+        }
+        Rol r = usuarioActual.getRol();
+
+        boolean verUsuarios     = (r == Rol.SUPER_ADMIN) || (r == Rol.ADMIN) || (r == Rol.BIBLIOTECARIO);
+        boolean verEditarLibros = (r == Rol.ADMIN);
+        boolean verEditarInfo   = (r == Rol.ADMIN);
+        boolean verEditarSlider = (r == Rol.ADMIN);
+
+        // Si quieres que SUPER_ADMIN vea SOLO "Usuarios" (además de lo default)
+        if (r == Rol.SUPER_ADMIN) {
+            verEditarLibros = false;
+            verEditarInfo   = false;
+            verEditarSlider = false;
+        }
+        setVis(botonUsuarios, verUsuarios);
+        setVis(editarLibrosBtn, verEditarLibros);
+        setVis(editarInfoBtn,   verEditarInfo);
+        setVis(editarSliderBtn, verEditarSlider);
     }
 
     // Utilidad para mostrar alertas
