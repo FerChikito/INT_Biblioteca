@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.int_biblioteca.CrudUsuariosController"
+            prefWidth="700" prefHeight="500">
+
+    <ScrollPane fitToWidth="true" fitToHeight="true"
+                AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
+                AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+
+        <VBox spacing="10">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+
+            <!-- Tabla -->
+            <TableView fx:id="tablaUsuarios" prefHeight="300" prefWidth="680">
+                <columns>
+                    <TableColumn fx:id="columnaNombre" text="Nombre" prefWidth="360"/>
+                    <TableColumn fx:id="columnaRol"    text="Rol"    prefWidth="300"/>
+                </columns>
+                <onMouseClicked>#handleSeleccionarUsuario</onMouseClicked>
+            </TableView>
+
+            <!-- Campos -->
+            <HBox spacing="10">
+                <TextField     fx:id="campoNombre"      promptText="Nombre"     prefWidth="220"/>
+                <PasswordField fx:id="campoContrasenia" promptText="Contraseña" prefWidth="220"/>
+                <ComboBox      fx:id="comboRol"                                prefWidth="220"/>
+            </HBox>
+
+            <!-- Botones -->
+            <HBox spacing="10">
+                <Button text="Insertar"   onAction="#handleInsertarUsuario"/>
+                <Button text="Actualizar" onAction="#handleActualizarUsuario"/>
+                <Button text="Eliminar"   onAction="#handleEliminarUsuario"/>
+                <Button text="Limpiar"    onAction="#handleLimpiarUsuario"/>
+            </HBox>
+        </VBox>
+    </ScrollPane>
+</AnchorPane>

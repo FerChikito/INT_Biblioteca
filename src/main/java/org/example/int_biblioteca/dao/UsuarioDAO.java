@@ -12,53 +12,53 @@ public final class UsuarioDAO {
     private UsuarioDAO() { }
 
     /** Inserta usando NOMBRE (único), CONTRASENIA y ROL */
-    public static boolean insertar(Usuario u) throws SQLException {
+    public static boolean insertar(Usuario usuario) throws SQLException {
         final String sql = "INSERT INTO USUARIOS (NOMBRE, CONTRASENIA, ROL) VALUES (?, ?, ?)";
-        try (Connection c = Database.getConnection();
-             PreparedStatement ps = c.prepareStatement(sql)) {
-            ps.setString(1, u.getNombre());
-            ps.setString(2, u.getContrasenia());   // <-- OJO: contrasenia
-            ps.setString(3, u.getRol().name());    // guarda el enum como texto
-            return ps.executeUpdate() == 1;
+        try (Connection conexion = Database.getConnection();
+             PreparedStatement prepareStatement = conexion .prepareStatement(sql)) {
+            prepareStatement.setString(1, usuario.getNombre());
+            prepareStatement.setString(2, usuario.getContrasenia());   // <-- OJO: contrasenia
+            prepareStatement.setString(3, usuario.getRol().name());    // guarda el enum como texto
+            return prepareStatement.executeUpdate() == 1;
         }
     }
 
     /** Actualiza por nombre (clave lógica) */
-    public static boolean actualizar(String nombreOriginal, Usuario nuevo) throws SQLException {
+    public static boolean actualizar(String nombreOriginal, Usuario nuevoUsuario) throws SQLException {
         final String sql = "UPDATE USUARIOS SET NOMBRE = ?, CONTRASENIA = ?, ROL = ? WHERE NOMBRE = ?";
-        try (Connection c = Database.getConnection();
-             PreparedStatement ps = c.prepareStatement(sql)) {
-            ps.setString(1, nuevo.getNombre());
-            ps.setString(2, nuevo.getContrasenia());
-            ps.setString(3, nuevo.getRol().name());
-            ps.setString(4, nombreOriginal);
-            return ps.executeUpdate() == 1;
+        try (Connection conexion  = Database.getConnection();
+             PreparedStatement prepareStatement = conexion .prepareStatement(sql)) {
+            prepareStatement.setString(1, nuevoUsuario.getNombre());
+            prepareStatement.setString(2, nuevoUsuario.getContrasenia());
+            prepareStatement.setString(3, nuevoUsuario.getRol().name());
+            prepareStatement.setString(4, nombreOriginal);
+            return prepareStatement.executeUpdate() == 1;
         }
     }
 
     /** Elimina por nombre */
-    public static boolean eliminar(String nombre) throws SQLException {
+    public static boolean eliminar(String nombreUsuario) throws SQLException {
         final String sql = "DELETE FROM USUARIOS WHERE NOMBRE = ?";
-        try (Connection c = Database.getConnection();
-             PreparedStatement ps = c.prepareStatement(sql)) {
-            ps.setString(1, nombre);
-            return ps.executeUpdate() == 1;
+        try (Connection conexion  = Database.getConnection();
+             PreparedStatement prepareStatement = conexion .prepareStatement(sql)) {
+            prepareStatement.setString(1, nombreUsuario);
+            return prepareStatement.executeUpdate() == 1;
         }
     }
 
     /** Obtiene un usuario por nombre */
-    public static Usuario obtener(String nombre) throws SQLException {
+    public static Usuario obtener(String nombreUsuario) throws SQLException {
         final String sql = "SELECT NOMBRE, CONTRASENIA, ROL FROM USUARIOS WHERE NOMBRE = ?";
-        try (Connection c = Database.getConnection();
-             PreparedStatement ps = c.prepareStatement(sql)) {
-            ps.setString(1, nombre);
-            try (ResultSet rs = ps.executeQuery()) {
+        try (Connection conexion = Database.getConnection();
+             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+            sentencia.setString(1, nombreUsuario);
+            try (ResultSet rs = sentencia.executeQuery()) {
                 if (!rs.next()) return null;
-                String nom = rs.getString("NOMBRE");
-                String contrasenia = rs.getString("CONTRASENIA");
-                Rol rol = Rol.valueOf(rs.getString("ROL"));
-                // Constructor esperado: Usuario(String nombre, String contrasenia, Rol rol)
-                return new Usuario(nom, contrasenia, rol);
+                return new Usuario(
+                        rs.getString("NOMBRE"),
+                        rs.getString("CONTRASENIA"),
+                        Rol.valueOf(rs.getString("ROL"))
+                );
             }
         }
     }
@@ -66,17 +66,18 @@ public final class UsuarioDAO {
     /** Lista completa (ordenada por nombre) */
     public static List<Usuario> listar() throws SQLException {
         final String sql = "SELECT NOMBRE, CONTRASENIA, ROL FROM USUARIOS ORDER BY NOMBRE";
-        List<Usuario> out = new ArrayList<Usuario>();
-        try (Connection c = Database.getConnection();
-             PreparedStatement ps = c.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        List<Usuario> usuarios  = new ArrayList<Usuario>();
+        try (Connection conexion  = Database.getConnection();
+             PreparedStatement sentencia  = conexion .prepareStatement(sql);
+             ResultSet rs = sentencia .executeQuery()) {
             while (rs.next()) {
-                String nom = rs.getString("NOMBRE");
-                String contrasenia = rs.getString("CONTRASENIA");
-                Rol rol = Rol.valueOf(rs.getString("ROL"));
-                out.add(new Usuario(nom, contrasenia, rol));
+                usuarios.add(new Usuario(
+                        rs.getString("NOMBRE"),
+                        rs.getString("CONTRASENIA"),
+                        Rol.valueOf(rs.getString("ROL"))
+                ));
             }
         }
-        return out;
+        return usuarios;
     }
 }
