@@ -45,6 +45,8 @@ public class MenuPrincipal {
     private AnchorPane sliderView;
     @FXML
     private VBox infoView;
+    @FXML
+    private Button botonUsuarios;      // NUEVO: abre CRUD Usuarios
 
     // Usuario que inició sesión
     private Usuario usuarioActual;
@@ -91,6 +93,11 @@ public class MenuPrincipal {
         cargarSlider();
         cargarTexto(); // Llama a cargarTexto aquí// Luego guarda el contenido original del centro
         originalCenter = rootPane.getCenter();
+        // Que no ocupen espacio cuando estén ocultos:
+        if (botonUsuarios   != null) botonUsuarios.managedProperty().bind(botonUsuarios.visibleProperty());
+        if (editarInfoBtn   != null) editarInfoBtn.managedProperty().bind(editarInfoBtn.visibleProperty());
+        if (editarSliderBtn != null) editarSliderBtn.managedProperty().bind(editarSliderBtn.visibleProperty());
+        if (editarLibrosBtn != null) editarLibrosBtn.managedProperty().bind(editarLibrosBtn.visibleProperty());
 
         mostrarBotonesDeEdicion();
     }
@@ -159,12 +166,30 @@ public class MenuPrincipal {
 
     // Muestra botón de edición solo si es admin
     private void mostrarBotonesDeEdicion() {
-        boolean esAdmin = usuarioActual != null && usuarioActual.getRol() == Rol.ADMIN;
+        if (usuarioActual == null) {
+            // ocultar todo lo “especial” si no hay sesión
+            if (botonUsuarios   != null) botonUsuarios.setVisible(false);
+            if (editarInfoBtn   != null) editarInfoBtn.setVisible(false);
+            if (editarSliderBtn != null) editarSliderBtn.setVisible(false);
+            if (editarLibrosBtn != null) editarLibrosBtn.setVisible(false);
+            return;
+        }
 
-        if (editarInfoBtn != null) editarInfoBtn.setVisible(esAdmin);
-        if (editarSliderBtn != null) editarSliderBtn.setVisible(esAdmin);
-        if (editarLibrosBtn != null) editarLibrosBtn.setVisible(esAdmin);
-        if (botonEditar != null) botonEditar.setVisible(esAdmin); // si también usas este
+        Rol rol = usuarioActual.getRol();
+        boolean esSuperAdmin   = rol == Rol.SUPER_ADMIN;
+        boolean esAdmin        = rol == Rol.ADMIN;
+        boolean esBibliotecario= rol == Rol.BIBLIOTECARIO;
+
+        // Reglas del cliente:
+        // SUPER_ADMIN: todo
+        // ADMIN: CRUD de bibliotecarios y libros (aquí: edición de libros/info/slider)
+        // BIBLIOTECARIO: CRUD de usuarios (aquí: botón Usuarios)
+        // USUARIO: sin botones extra
+
+        if (botonUsuarios   != null) botonUsuarios.setVisible(esBibliotecario || esAdmin || esSuperAdmin);
+        if (editarLibrosBtn != null) editarLibrosBtn.setVisible(esAdmin || esSuperAdmin);
+        if (editarInfoBtn   != null) editarInfoBtn.setVisible(esAdmin || esSuperAdmin);
+        if (editarSliderBtn != null) editarSliderBtn.setVisible(esAdmin || esSuperAdmin);
     }
 
     private void showPane(Node pane) {
@@ -215,6 +240,18 @@ public class MenuPrincipal {
         } catch (IOException e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Error", "No se pudo cargar la vista de edición de libros.");
+        }
+    }
+
+    @FXML
+    private void abrirUsuarios(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("crud-usuarios.fxml"));
+            Parent vista = loader.load();
+            rootPane.setCenter(vista);
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "No se pudo cargar la vista de usuarios.");
         }
     }
 

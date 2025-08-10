@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="522.0" prefWidth="904.0" style="-fx-background-color: #5B6B86;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.int_biblioteca.MenuPrincipal">
+<BorderPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="522.0" prefWidth="904.0" style="-fx-background-color: #5B6B86;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.int_biblioteca.MenuPrincipal">
     <left>
         <VBox prefHeight="400.0" prefWidth="144.0" style="-fx-background-color: #091740; -fx-border-color: #5B6B86; -fx-border-width: 10px 0px 0px 0px;" BorderPane.alignment="CENTER">
             <children>
@@ -24,6 +24,42 @@
                         <Font size="13.0" />
                     </font>
                 </Button>
+                <!-- Botón CRUD Usuarios (BIBLIOTECARIO/ADMIN/SUPER_ADMIN) -->
+                <Button fx:id="botonUsuarios" visible="false" managed="false"
+                        mnemonicParsing="false" onAction="#abrirUsuarios"
+                        prefHeight="66.0" prefWidth="144.0"
+                        style="-fx-background-color: #091740; -fx-border-color: #ffffff; -fx-border-width: 0 0 2 0;"
+                        text="Usuarios 👥" textFill="WHITE">
+                    <font><Font size="13.0"/></font>
+                </Button>
+
+                <!-- Botón Editar Libros (ADMIN/SUPER_ADMIN) -->
+                <Button fx:id="editarLibrosBtn" visible="false" managed="false"
+                        mnemonicParsing="false" onAction="#handleEditarLibros"
+                        prefHeight="66.0" prefWidth="144.0"
+                        style="-fx-background-color: #091740; -fx-border-color: #ffffff; -fx-border-width: 0 0 2 0;"
+                        text="Editar Libros ✏️" textFill="WHITE">
+                    <font><Font size="13.0"/></font>
+                </Button>
+
+                <!-- Botón Editar Info (ADMIN/SUPER_ADMIN) -->
+                <Button fx:id="editarInfoBtn" visible="false" managed="false"
+                        mnemonicParsing="false" onAction="#handleEditarInfo"
+                        prefHeight="66.0" prefWidth="144.0"
+                        style="-fx-background-color: #091740; -fx-border-color: #ffffff; -fx-border-width: 0 0 2 0;"
+                        text="Editar Info 📝" textFill="WHITE">
+                    <font><Font size="13.0"/></font>
+                </Button>
+
+                <!-- Botón Editar Slider (ADMIN/SUPER_ADMIN) -->
+                <Button fx:id="editarSliderBtn" visible="false" managed="false"
+                        mnemonicParsing="false" onAction="#handleEditarSlider"
+                        prefHeight="66.0" prefWidth="144.0"
+                        style="-fx-background-color: #091740; -fx-border-color: #ffffff; -fx-border-width: 0 0 2 0;"
+                        text="Editar Slider 🖼️" textFill="WHITE">
+                    <font><Font size="13.0"/></font>
+                </Button>
+
             </children>
         </VBox>
     </left>

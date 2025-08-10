@@ -94,7 +94,9 @@ public class HelloController {
     private static final List<Usuario> usuarios = new ArrayList<>();
 
     static {
-        usuarios.add(new Usuario("admin", "1234", Rol.ADMIN));
+        usuarios.add(new Usuario("isaak", "123", Rol.SUPER_ADMIN));
+        usuarios.add(new Usuario("emi", "123", Rol.BIBLIOTECARIO));
+        usuarios.add(new Usuario("jesus", "123", Rol.ADMIN));
         usuarios.add(new Usuario("fer", "111", Rol.USUARIO));
     }
     private static Usuario usuarioActual;
