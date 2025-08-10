@@ -1,8 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="600.0" maxWidth="600.0" minHeight="600.0" minWidth="600.0" prefHeight="600.0" prefWidth="600.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.int_biblioteca.HelloController">
+<AnchorPane maxHeight="600.0" maxWidth="600.0" minHeight="600.0" minWidth="600.0" prefHeight="600.0" prefWidth="600.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.int_biblioteca.ContraseniaController">
     <children>
         <Pane layoutX="25.0" layoutY="25.0" maxHeight="550.0" maxWidth="550.0" minHeight="550.0" minWidth="550.0" prefHeight="550.0" prefWidth="550.0" style="-fx-background-color: #5B6B86; -fx-background-radius: 10px;">
             <children>
@@ -16,18 +18,17 @@
                                     <children>
                                         <Label layoutX="101.0" layoutY="58.0" style="-fx-text-fill: #555555; -fx-font-size: 14;" text="Contraseña Actual" />
                                         <PasswordField fx:id="currentPasswordField1" layoutX="101.0" layoutY="78.0" style="-fx-background-color: transparent; -fx-border-color: #dddddd; -fx-border-width: 0 0 1px 0;" />
-                                        <TextField fx:id="currentPasswordVisibleField" layoutX="101.0" layoutY="158.0" style="-fx-background-color: transparent; -fx-border-color: #dddddd; -fx-border-width: 0 0 1px 0;" visible="false" />
-                                        <Button fx:id="toggleCurrentPasswordButton" layoutX="257.0" layoutY="78.0" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-border-color: #dddddd; -fx-border-radius: 3px;" text="👁" />
+                                        <TextField fx:id="currentPasswordVisibleField" layoutX="101.0" layoutY="98.0" managed="false" prefHeight="0.0" prefWidth="40.0" style="-fx-background-color: transparent; -fx-border-color: #dddddd; -fx-border-width: 0 0 1px 0;" visible="false" />
+                                        <Button fx:id="toggleCurrentPasswordButton" layoutX="257.0" layoutY="78.0" mnemonicParsing="false" onAction="#toggleCurrentPassword" style="-fx-background-color: transparent; -fx-border-color: #dddddd; -fx-border-radius: 3px;" text="👀" />
                                         <Label layoutX="100.0" layoutY="123.0" style="-fx-text-fill: #555555; -fx-font-size: 14;" text="Contraseña Nueva" />
                                         <PasswordField fx:id="newPasswordField" layoutX="101.0" layoutY="145.0" style="-fx-background-color: transparent; -fx-border-color: #dddddd; -fx-border-width: 0 0 1px 0;" />
-                                        <TextField fx:id="newPasswordVisibleField" layoutX="101.0" layoutY="218.0" style="-fx-background-color: transparent; -fx-border-color: #dddddd; -fx-border-width: 0 0 1px 0;" visible="false" />
-                                        <Button fx:id="toggleNewPasswordButton" layoutX="257.0" layoutY="145.0" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-border-color: #dddddd; -fx-border-radius: 3px;" text="👁" />
+                                        <TextField fx:id="newPasswordVisibleField" layoutX="101.0" layoutY="158.0" managed="false" onAction="#toggleNewPassword" prefHeight="60.0" prefWidth="0.0" style="-fx-background-color: transparent; -fx-border-color: #dddddd; -fx-border-width: 0 0 1px 0;" visible="false" />
+                                        <Button fx:id="toggleNewPasswordButton" layoutX="257.0" layoutY="145.0" mnemonicParsing="false" onAction="#toggleNewPassword" style="-fx-background-color: transparent; -fx-border-color: #dddddd; -fx-border-radius: 3px;" text="👀" />
                                         <Button fx:id="confirmarButton" layoutX="138.0" layoutY="193.0" mnemonicParsing="false" style="-fx-background-color: #091740; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5px;" text="Confirmar" />
                                     </children>
                                 </Pane>
                             </children>
                         </Pane>
-                        <Button layoutX="19.0" layoutY="20.0" mnemonicParsing="false" style="-fx-background-color: #091740; -fx-text-fill: white; -fx-font-weight: bold;" text="Regresar" />
                     </children>
                 </Pane>
                 <ImageView fitHeight="60.0" fitWidth="60.0" layoutX="14.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true">

@@ -68,16 +68,42 @@ public class MenuPrincipal {
 
     // Método que se ejecuta al hacer clic en el botón de menú
     @FXML
-    private void handleBotonMenu(ActionEvent event) {
-        // Lógica para abrir el menú
-        System.out.println("Botón Menú presionado");
+    private void handleBotonMenu(javafx.event.ActionEvent event) {
+        // Evita NPE y no dupliques el centro si ya está puesto
+        if (originalCenter != null && rootPane.getCenter() != originalCenter) {
+            rootPane.setCenter(originalCenter);
+        }
     }
 
     // Método que se ejecuta al hacer clic en el botón de perfil
     @FXML
     private void handleBotonPerfil(ActionEvent event) {
-        // Lógica para acceder al perfil
-        System.out.println("Botón Perfil presionado");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("perfil.fxml"));
+
+            // 1) Carga la vista
+            javafx.scene.Parent vista = loader.load();
+
+            // 2) Tipa el controller correctamente
+            org.example.int_biblioteca.PerfilController ctrl = loader.getController();
+
+            // 3) Pasa el usuario y el callback de regresar
+            ctrl.setUsuarioActual(usuarioActual);
+            ctrl.setOnMostrarVista(v -> rootPane.setCenter(v));
+            ctrl.setOnRegresar(() -> {
+                if (originalCenter != null && rootPane.getCenter() != originalCenter) {
+                    rootPane.setCenter(originalCenter);
+                }
+            });
+
+            // 4) Muestra la vista en el centro
+            rootPane.setCenter(vista);
+
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Perfil",
+                    "No se pudo abrir la vista de perfil:\n" + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     // Método que se ejecuta al hacer clic en el botón de catálogo
