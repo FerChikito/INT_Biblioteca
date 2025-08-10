@@ -9,17 +9,17 @@
     <left>
         <VBox prefHeight="400.0" prefWidth="144.0" style="-fx-background-color: #091740; -fx-border-color: #5B6B86; -fx-border-width: 10px 0px 0px 0px;" BorderPane.alignment="CENTER">
             <children>
-                <Button fx:id="botonMenu" mnemonicParsing="false" onMouseClicked="#handleBotonMenu" prefHeight="66.0" prefWidth="144.0" style="-fx-background-color: #091740; -fx-border-color: #ffffff; -fx-border-width: 0px 0px 2px 0px;" text="Menú ☰" textFill="WHITE">
+                <Button fx:id="botonMenu" mnemonicParsing="false" onAction="#handleBotonMenu" prefHeight="66.0" prefWidth="144.0" style="-fx-background-color: #091740; -fx-border-color: #ffffff; -fx-border-width: 0px 0px 2px 0px;" text="Menú ☰" textFill="WHITE">
                     <font>
                         <Font size="20.0" />
                     </font>
                 </Button>
-                <Button fx:id="botonPerfil" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onMouseClicked="#handleBotonPerfil" prefHeight="66.0" prefWidth="144.0" style="-fx-background-color: #091740; -fx-border-color: #ffffff; -fx-border-width: 0px 0px 2px 0px;" text="Perfil 👤" textFill="WHITE">
+                <Button fx:id="botonPerfil" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#handleBotonPerfil" prefHeight="66.0" prefWidth="144.0" style="-fx-background-color: #091740; -fx-border-color: #ffffff; -fx-border-width: 0px 0px 2px 0px;" text="Perfil 👤" textFill="WHITE">
                     <font>
                         <Font size="13.0" />
                     </font>
                 </Button>
-                <Button fx:id="botonCatalogoL" layoutX="10.0" layoutY="76.0" mnemonicParsing="false" onMouseClicked="#handleBotonCatalogoL" prefHeight="66.0" prefWidth="144.0" style="-fx-background-color: #091740; -fx-border-color: #ffffff; -fx-border-width: 0px 0px 2px 0px;" text="Catalogo de Libros" textFill="WHITE">
+                <Button fx:id="botonCatalogoL" layoutX="10.0" layoutY="76.0" mnemonicParsing="false" onAction="#handleBotonCatalogoL" prefHeight="66.0" prefWidth="144.0" style="-fx-background-color: #091740; -fx-border-color: #ffffff; -fx-border-width: 0px 0px 2px 0px;" text="Catalogo de Libros" textFill="WHITE">
                     <font>
                         <Font size="13.0" />
                     </font>

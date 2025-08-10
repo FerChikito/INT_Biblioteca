@@ -7,14 +7,14 @@
     <children>
 
         <!-- Botón izquierdo -->
-        <Button fx:id="btnIzq" prefHeight="30.0" prefWidth="30.0" text="&lt;" />
+        <Button fx:id="btnIzq" prefHeight="30.0" prefWidth="30.0" text="&lt;" onAction="#prev" />
 
         <!-- Área del slide -->
         <StackPane fx:id="slidePane" prefHeight="100.0" prefWidth="500.0" style="-fx-background-color: white; -fx-padding: 20; -fx-border-radius: 10; -fx-border-color: #ccc;">
         </StackPane>
 
         <!-- Botón derecho -->
-        <Button fx:id="btnDerch" prefHeight="30.0" prefWidth="30.0" text="&gt;" />
+        <Button fx:id="btnDerch" prefHeight="30.0" prefWidth="30.0" text="&gt;" onAction="#next" />
 
     </children>
 </HBox>

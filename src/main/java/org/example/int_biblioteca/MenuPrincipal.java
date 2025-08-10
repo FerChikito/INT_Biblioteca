@@ -102,16 +102,31 @@ public class MenuPrincipal {
         mostrarBotonesDeEdicion();
     }
 
+    // Guardamos una referencia al controller del slider cargado desde slider.fxml.
+// Con esto podremos modificar su contenido (diapositivas) SIN reemplazar el nodo en pantalla.
+    private SliderController sliderController;
+    // ===== Cargar el slider al iniciar el menú =====
     private void cargarSlider() {
         try {
+            // 1) Preparamos un FXMLLoader apuntando al FXML del slider.
+            //    La ruta es relativa al paquete de esta clase: org/example/int_biblioteca/slider.fxml
             FXMLLoader loader = new FXMLLoader(getClass().getResource("slider.fxml"));
+
+            // 2) Cargamos el FXML. Esto instancia el árbol de nodos (HBox raíz del slider)
+            //    y también crea el controller declarado en el FXML (SliderController).
             HBox slider = loader.load();
-            sliderContainer.getChildren().add(slider);
+
+            // 3) Obtenemos el controller real del slider. ¡Clave!
+            //    Con esta referencia podremos llamar a sus métodos públicos (setSlidesText, next, prev, etc.).
+            sliderController = loader.getController();
+
+            // 4) Colocamos el nodo raíz del slider dentro de nuestro contenedor en el menú.
+            //    Usamos setAll para reemplazar cualquier contenido previo.
+            sliderContainer.getChildren().setAll(slider);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 
     private void cargarTexto() {
@@ -215,22 +230,48 @@ public class MenuPrincipal {
         infoP.getChildren().setAll(editor, guardar);
     }
 
+    // ===== Editar el contenido del slider desde el menú =====
     @FXML
     private void handleEditarSlider(ActionEvent event) {
         if (usuarioActual == null || usuarioActual.getRol() != Rol.ADMIN) return;
+        if (sliderController == null) return; // por si no cargó aún
 
-        // Antes de editar slider, vuelve al centro original
-        rootPane.setCenter(originalCenter);
+        // 1) Preparamos el texto actual, separando cada slide con --- en su propia línea
+        String inicial = String.join("\n---\n", sliderController.getSlidesText());
 
-        // Ahora sí toca tu lógica de edición dentro del sliderContainer
-        sliderContainer.getChildren().clear();
-        TextField nuevoTexto = new TextField("Texto del slider…");
-        Button guardar = new Button("Guardar");
-        guardar.setOnAction(e -> {
-            sliderContainer.getChildren().setAll(new Label(nuevoTexto.getText()));
+        // 2) Creamos un diálogo con TextArea multi-línea
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Editar slider");
+        dialog.setHeaderText("Cada diapositiva sepárala con una línea que contenga solo ---");
+        TextArea area = new TextArea(inicial);
+        area.setPrefColumnCount(60);
+        area.setPrefRowCount(14);
+        dialog.getDialogPane().setContent(area);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        // 3) Procesamos al aceptar: partimos por líneas con solo '---'
+        dialog.showAndWait().ifPresent(bt -> {
+            if (bt != ButtonType.OK) return;
+
+            String texto = area.getText();
+            // Split por una línea que tenga solo --- (con o sin espacios alrededor)
+            String[] partes = texto.split("(?m)^\\s*---\\s*$");
+
+            // Normalizamos: trim a cada parte, descartamos vacías (pero mantenemos saltos internos)
+            java.util.List<String> nuevas = new java.util.ArrayList<>();
+            for (String p : partes) {
+                String s = p.strip();               // quita espacios/linebreaks al inicio/fin
+                if (!s.isEmpty()) nuevas.add(s);    // conserva líneas internas como texto del slide
+            }
+
+            // Si quedó vacío, no pisamos el slider (evita que se “borre” accidentalmente)
+            if (nuevas.isEmpty()) return;
+
+            // 4) Actualizamos el slider SIN reemplazar su nodo (botones y lógica quedan vivos)
+            sliderController.setSlidesText(nuevas);
         });
-        sliderContainer.getChildren().setAll(nuevoTexto, guardar);
     }
+
     @FXML
     private void handleEditarLibros(ActionEvent event) {
         if (usuarioActual == null || usuarioActual.getRol() != Rol.ADMIN) return;

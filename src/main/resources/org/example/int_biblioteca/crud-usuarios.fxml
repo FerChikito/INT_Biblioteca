@@ -19,12 +19,13 @@
             </padding>
 
             <!-- Tabla -->
-            <TableView fx:id="tablaUsuarios" prefHeight="300" prefWidth="680">
+            <TableView fx:id="tablaUsuarios"
+                       prefHeight="300" prefWidth="680"
+                       onMouseClicked="#handleSeleccionarUsuario">
                 <columns>
                     <TableColumn fx:id="columnaNombre" text="Nombre" prefWidth="360"/>
                     <TableColumn fx:id="columnaRol"    text="Rol"    prefWidth="300"/>
                 </columns>
-                <onMouseClicked>#handleSeleccionarUsuario</onMouseClicked>
             </TableView>
 
             <!-- Campos -->
