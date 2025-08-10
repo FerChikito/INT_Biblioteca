@@ -135,34 +135,35 @@ public class MenuPrincipal {
     // Buscar libros por título, autor o ISBN
     @FXML
     private void buscarLibro() {
-        String query = buscarField.getText().toLowerCase().trim();
+        String termino = buscarField.getText() == null ? "" : buscarField.getText().trim();
         infoP.getChildren().clear();
 
-        if (query.isEmpty()) {
+        if (termino.isEmpty()) {
             cargarTexto();
             return;
         }
 
+        try {
+            List<Libro> resultados = org.example.int_biblioteca.dao.LibroDAO.buscar(termino);
 
-        List<Libro> resultados = libros.stream()
-                .filter(libro -> libro.getTitulo().toLowerCase().contains(query)
-                        || libro.getAutor().toLowerCase().contains(query)
-                        || libro.getIsbn().toLowerCase().contains(query))
-                .toList();
-
-        if (resultados.isEmpty()) {
-            Label noResultado = new Label("No se encontraron libros.");
-            noResultado.setStyle("-fx-font-style: italic;");
-            infoP.getChildren().add(noResultado);
-        } else {
-            for (Libro libro : resultados) {
-                String texto = libro.getTitulo() + " | " + libro.getAutor() + " | ISBN: " + libro.getIsbn();
-                Label label = new Label("• " + texto);
-                label.setStyle("-fx-font-size: 14px;");
-                infoP.getChildren().add(label);
+            if (resultados.isEmpty()) {
+                Label noResultado = new Label("No se encontraron libros.");
+                noResultado.setStyle("-fx-font-style: italic;");
+                infoP.getChildren().add(noResultado);
+            } else {
+                for (Libro libro : resultados) {
+                    String texto = libro.getTitulo() + " | " + libro.getAutor() + " | ISBN: " + libro.getIsbn();
+                    Label etiqueta = new Label("• " + texto);
+                    etiqueta.setStyle("-fx-font-size: 14px;");
+                    infoP.getChildren().add(etiqueta);
+                }
             }
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Base de datos", "No se pudo realizar la búsqueda:\n" + e.getMessage());
+            cargarTexto(); // fallback
         }
     }
+
 
     // Muestra botón de edición solo si es admin
     private void mostrarBotonesDeEdicion() {

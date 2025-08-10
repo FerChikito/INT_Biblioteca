@@ -58,4 +58,35 @@ public final class LibroDAO {
         }
         return out;
     }
+
+    public static List<Libro> buscar(String termino) throws SQLException {
+        final String sql = """
+        SELECT ID_LIBRO, ISBN, TITULO, AUTOR
+          FROM LIBROS
+         WHERE UPPER(TITULO) LIKE ?
+            OR UPPER(AUTOR)  LIKE ?
+            OR UPPER(ISBN)   LIKE ?
+         ORDER BY TITULO
+        """;
+        String patron = "%" + termino.trim().toUpperCase() + "%";
+
+        List<Libro> resultados = new ArrayList<>();
+        try (Connection c = Database.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, patron);
+            ps.setString(2, patron);
+            ps.setString(3, patron);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    resultados.add(new Libro(
+                            rs.getString("TITULO"),
+                            rs.getString("AUTOR"),
+                            rs.getString("ISBN")
+                    ));
+                }
+            }
+        }
+        return resultados;
+    }
+
 }
