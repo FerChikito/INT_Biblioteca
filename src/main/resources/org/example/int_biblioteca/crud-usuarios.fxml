@@ -4,44 +4,55 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/17"
+<AnchorPane xmlns="http://javafx.com/javafx/17.0.12"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.example.int_biblioteca.CrudUsuariosController"
-            prefWidth="700" prefHeight="500">
+            prefWidth="700" prefHeight="520">
 
-    <ScrollPane fitToWidth="true" fitToHeight="true"
-                AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
-                AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+    <children>
+        <ScrollPane fitToWidth="true" fitToHeight="true"
+                    AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
+                    AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
 
-        <VBox spacing="10">
-            <padding>
-                <Insets top="10" right="10" bottom="10" left="10"/>
-            </padding>
+            <content>
+                <VBox spacing="10">
+                    <padding>
+                        <Insets top="10" right="10" bottom="10" left="10"/>
+                    </padding>
 
-            <!-- Tabla -->
-            <TableView fx:id="tablaUsuarios"
-                       prefHeight="300" prefWidth="680"
-                       onMouseClicked="#handleSeleccionarUsuario">
-                <columns>
-                    <TableColumn fx:id="columnaNombre" text="Nombre" prefWidth="360"/>
-                    <TableColumn fx:id="columnaRol"    text="Rol"    prefWidth="300"/>
-                </columns>
-            </TableView>
+                    <!-- Tabla de usuarios -->
+                    <TableView fx:id="tablaUsuarios" prefHeight="300" prefWidth="680"
+                               onMouseClicked="#handleSeleccionarUsuario">
+                        <columns>
+                            <TableColumn fx:id="columnaNombre" text="Nombre" prefWidth="200"/>
+                            <TableColumn fx:id="columnaCorreo" text="Correo" prefWidth="240"/>
+                            <TableColumn fx:id="columnaRol"    text="Rol"    prefWidth="200"/>
+                        </columns>
+                    </TableView>
 
-            <!-- Campos -->
-            <HBox spacing="10">
-                <TextField     fx:id="campoNombre"      promptText="Nombre"     prefWidth="220"/>
-                <PasswordField fx:id="campoContrasenia" promptText="Contraseña" prefWidth="220"/>
-                <ComboBox      fx:id="comboRol"                                prefWidth="220"/>
-            </HBox>
+                    <!-- Fila 1 de entradas -->
+                    <HBox spacing="10">
+                        <TextField fx:id="campoNombre"    promptText="Nombre"      prefWidth="200"/>
+                        <TextField fx:id="campoCorreo"    promptText="Correo"      prefWidth="240"/>
+                        <ComboBox fx:id="comboRol"        promptText="Rol"         prefWidth="200"/>
+                    </HBox>
 
-            <!-- Botones -->
-            <HBox spacing="10">
-                <Button text="Insertar"   onAction="#handleInsertarUsuario"/>
-                <Button text="Actualizar" onAction="#handleActualizarUsuario"/>
-                <Button text="Eliminar"   onAction="#handleEliminarUsuario"/>
-                <Button text="Limpiar"    onAction="#handleLimpiarUsuario"/>
-            </HBox>
-        </VBox>
-    </ScrollPane>
+                    <!-- Fila 2 de entradas -->
+                    <HBox spacing="10">
+                        <TextField     fx:id="campoTelefono"    promptText="Teléfono"     prefWidth="200"/>
+                        <TextField     fx:id="campoDireccion"   promptText="Dirección"    prefWidth="240"/>
+                        <PasswordField fx:id="campoContrasenia" promptText="Contraseña"   prefWidth="200"/>
+                    </HBox>
+
+                    <!-- Botones -->
+                    <HBox spacing="10">
+                        <Button text="Agregar"    onAction="#handleInsertarUsuario"/>
+                        <Button text="Actualizar" onAction="#handleActualizarUsuario"/>
+                        <Button text="Eliminar"   onAction="#handleEliminarUsuario"/>
+                        <Button text="Limpiar"    onAction="#handleLimpiarUsuario"/>
+                    </HBox>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </children>
 </AnchorPane>
