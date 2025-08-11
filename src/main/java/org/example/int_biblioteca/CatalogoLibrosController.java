@@ -3,6 +3,8 @@ package org.example.int_biblioteca;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.util.Callback;
 import org.example.int_biblioteca.dao.LibroDAO;
@@ -77,21 +79,27 @@ public class CatalogoLibrosController {
         }
     }
 
+    private Usuario usuarioActual;
+    public void setUsuarioActual(Usuario u) { this.usuarioActual = u; }
+
     @FXML
     private void handleVerCarrito() {
         try {
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("carrito.fxml"));
-            javafx.scene.Parent root = loader.load();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("carrito.fxml"));
+            Parent vista = loader.load();
+            CarritoController ctrl = loader.getController(); // <- controller real
+            ctrl.setUsuarioActual(usuarioActual);            // <- pasa el usuario logueado
 
             javafx.stage.Stage dlg = new javafx.stage.Stage();
             dlg.setTitle("Carrito");
             dlg.initModality(javafx.stage.Modality.APPLICATION_MODAL);
-            dlg.setScene(new javafx.scene.Scene(root));
+            dlg.setScene(new javafx.scene.Scene(vista));
             dlg.showAndWait();
         } catch (Exception e) {
             error("Carrito", "No se pudo abrir el carrito:\n" + e.getMessage());
         }
     }
+
 
     private Callback<TableColumn<Libro, Void>, TableCell<Libro, Void>> botonAgregarFactory() {
         return col -> new TableCell<>() {

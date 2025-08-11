@@ -6,10 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Random;
+import org.example.int_biblioteca.dao.PrestamoDAO;
 
 public class CarritoController {
 
@@ -20,9 +17,12 @@ public class CarritoController {
     @FXML private TableColumn<Libro, Void>   colAccion;
     @FXML private Label etiquetaTotal;
 
+    // <<< NUEVO: el usuario logueado >>>
+    private Usuario usuarioActual;
+    public void setUsuarioActual(Usuario u) { this.usuarioActual = u; }
+
     @FXML
     private void initialize() {
-        // Bind de datos a la lista del servicio (observable)
         ObservableList<Libro> items = CarritoService.getItems();
         tablaCarrito.setItems(items);
 
@@ -32,7 +32,6 @@ public class CarritoController {
 
         colAccion.setCellFactory(quitarFactory());
 
-        // Total siempre actualizado
         etiquetaTotal.textProperty().bind(Bindings.convert(CarritoService.totalProperty()));
     }
 
@@ -69,26 +68,41 @@ public class CarritoController {
 
     @FXML
     private void handleConfirmar() {
-        int n = CarritoService.total();
-        if (n == 0) {
-            info("Préstamo", "No hay libros en el carrito.");
+        if (usuarioActual == null) {
+            alerta("Sesión", "Debes iniciar sesión para confirmar el préstamo.", Alert.AlertType.WARNING);
             return;
         }
-        // Folio mock (Fase 2 lo haremos con la BD)
-        String fecha = LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE); // yyyyMMdd
-        String rand  = String.format("%04d", new Random().nextInt(10000));
-        String folio = "PR-" + fecha + "-" + rand;
+        var isbns = CarritoService.getIsbns();
+        if (isbns.isEmpty()) {
+            alerta("Carrito", "Tu carrito está vacío.", Alert.AlertType.INFORMATION);
+            return;
+        }
+        try {
+            // Pre-chequeos
+            if (PrestamoDAO.tieneVencidos(usuarioActual.getCorreo())) {
+                alerta("Préstamos", "Tienes préstamos vencidos. Devuélvelos para poder solicitar más.", Alert.AlertType.WARNING);
+                return;
+            }
+            int activos = PrestamoDAO.contarActivos(usuarioActual.getCorreo());
+            if (activos >= PrestamoDAO.MAX_ACTIVOS) {
+                alerta("Préstamos", "Límite de " + PrestamoDAO.MAX_ACTIVOS + " préstamos activos alcanzado.", Alert.AlertType.WARNING);
+                return;
+            }
 
-        info("Préstamo confirmado",
-                "Folio: " + folio + "\n" +
-                        "Libros: " + n + "\n\n" +
-                        "Presenta este folio en la biblioteca para recoger tu(s) libro(s).");
-
-        // Si quieres vaciar tras confirmar:
-        // CarritoService.vaciar();
-
-        // Si abriste el carrito como ventana aparte, puedes cerrarlo aquí:
-        // cerrarVentana();
+            int creados = PrestamoDAO.crearPrestamos(usuarioActual.getCorreo(), isbns);
+            if (creados > 0) {
+                CarritoService.vaciar();
+                alerta("Préstamos",
+                        "Se generaron " + creados + " préstamos.\n" +
+                                "Revisa Menú → Mis Préstamos para ver estado y fechas.",
+                        Alert.AlertType.INFORMATION);
+            } else {
+                alerta("Préstamos", "Ningún préstamo creado (libros ocupados o límite alcanzado).", Alert.AlertType.INFORMATION);
+            }
+        } catch (Exception e) {
+            alerta("Base de datos", "No se pudo crear el préstamo:\n" + e.getMessage(), Alert.AlertType.ERROR);
+            e.printStackTrace();
+        }
     }
 
     private void info(String t, String m) {
@@ -98,7 +112,14 @@ public class CarritoController {
         a.showAndWait();
     }
 
-    // Útil si el carrito se abre en un Stage modal
+    // <<< NUEVO: helper de alerta >>>
+    private void alerta(String titulo, String mensaje, Alert.AlertType tipo) {
+        Alert a = new Alert(tipo, mensaje, ButtonType.OK);
+        a.setHeaderText(null);
+        a.setTitle(titulo);
+        a.showAndWait();
+    }
+
     @SuppressWarnings("unused")
     private void cerrarVentana() {
         Stage st = (Stage) tablaCarrito.getScene().getWindow();

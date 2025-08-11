@@ -24,6 +24,14 @@
                         <Font size="13.0" />
                     </font>
                 </Button>
+                <Button mnemonicParsing="false"
+                        onAction="#abrirMisPrestamos"
+                        prefHeight="66.0" prefWidth="144.0"
+                        style="-fx-background-color: #091740; -fx-border-color: #ffffff; -fx-border-width: 0 0 2 0;"
+                        text="Mis Préstamos" textFill="WHITE">
+                    <font><Font size="13.0"/></font>
+                </Button>
+
                 <!-- Botón CRUD Usuarios (BIBLIOTECARIO/ADMIN/SUPER_ADMIN) -->
                 <Button fx:id="botonUsuarios" visible="false" managed="false"
                         mnemonicParsing="false" onAction="#abrirUsuarios"

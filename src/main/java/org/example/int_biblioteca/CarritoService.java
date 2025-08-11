@@ -1,9 +1,8 @@
 package org.example.int_biblioteca;
 
-import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.*;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.collections.*;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -67,4 +66,9 @@ public final class CarritoService {
     }
 
     private static String safe(String s) { return s == null ? "" : s.trim(); }
+
+    public static synchronized java.util.List<String> getIsbns() {
+        return new java.util.ArrayList<>(porIsbn.keySet());
+    }
+
 }

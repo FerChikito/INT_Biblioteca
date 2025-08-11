@@ -102,16 +102,7 @@ public class MenuPrincipal {
     // Método que se ejecuta al hacer clic en el botón de catálogo
     @FXML
     private void handleBotonCatalogoL(ActionEvent event) {
-        abrirCatalogo(null); // entra al catálogo sin búsqueda previa
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("catalogo-libros.fxml"));
-            Parent vista = loader.load();
-            rootPane.setCenter(vista);
-        } catch (IOException e) {
-            e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Catálogo",
-                    "No se pudo cargar el catálogo de libros:\n" + e.getMessage());
-        }
+        abrirCatalogo(null);
     }
 
     // Método para inicializar el slider
@@ -374,15 +365,38 @@ public class MenuPrincipal {
                 catalogoRoot = loader.load();
                 catalogoController = loader.getController();
             }
-            rootPane.setCenter(catalogoRoot);
-            ocultarBarraSuperior(true); // aquí escondemos la barra del menú
 
-            if (catalogoController != null && query != null && !query.isBlank()) {
-                catalogoController.buscarDesdeExterno(query);
+            // se  asegúra de pasar SIEMPRE el usuario antes de mostrar
+            if (catalogoController != null) {
+                catalogoController.setUsuarioActual(usuarioActual);
+                if (query != null && !query.isBlank()) {
+                    catalogoController.buscarDesdeExterno(query);
+                }
             }
+
+            rootPane.setCenter(catalogoRoot);
+            ocultarBarraSuperior(true);
         } catch (IOException e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Catálogo", "No se pudo abrir el catálogo:\n" + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void abrirMisPrestamos(javafx.event.ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("mis-prestamos.fxml"));
+            Parent vista = loader.load();
+
+            MisPrestamosController ctrl = loader.getController();
+            ctrl.setUsuarioActual(usuarioActual);
+            ctrl.setRolActual(usuarioActual != null ? usuarioActual.getRol() : Rol.USUARIO);
+            ctrl.cargarDatos();
+
+            rootPane.setCenter(vista);
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Mis Préstamos", "No se pudo abrir:\n" + e.getMessage());
+            e.printStackTrace();
         }
     }
 

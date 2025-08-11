@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.int_biblioteca.MisPrestamosController"
+            prefWidth="700" prefHeight="500">
+    <children>
+        <ScrollPane fitToWidth="true" fitToHeight="true"
+                    AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
+                    AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+            <content>
+                <VBox spacing="10">
+                    <padding>
+                        <Insets top="10" right="10" bottom="10" left="10"/>
+                    </padding>
+
+                    <Label fx:id="etiquetaResultados"
+                           text="Resultados (0)"
+                           style="-fx-font-size: 16px; -fx-text-fill: #1B2D4F; -fx-font-weight: bold;"/>
+
+                    <TableView fx:id="tablaPrestamos" prefHeight="360" prefWidth="680">
+                        <columns>
+                            <TableColumn fx:id="colId"            text="Folio"          prefWidth="70"/>
+                            <TableColumn fx:id="colTitulo"        text="Título"         prefWidth="220"/>
+                            <TableColumn fx:id="colIsbn"          text="ISBN"           prefWidth="160"/>
+                            <TableColumn fx:id="colFechaPrestamo" text="Fecha préstamo" prefWidth="120"/>
+                            <TableColumn fx:id="colFechaDevol"    text="Fecha devolución" prefWidth="120"/>
+                            <TableColumn fx:id="colEstado"        text="Estado"         prefWidth="80"/>
+                            <TableColumn fx:id="colFolio" text="Folio" prefWidth="160"/>
+                            <TableColumn fx:id="colLimite" text="Recoger antes de" prefWidth="160"/>
+                        </columns>
+                    </TableView>
+
+                    <HBox spacing="10" alignment="CENTER_RIGHT">
+                        <Button text="Refrescar" onAction="#handleRefrescar"
+                                style="-fx-background-color: #E0E6F0; -fx-text-fill: #0A163A;"/>
+                        <Button fx:id="btnMarcarDevuelto" text="Marcar devuelto" onAction="#handleMarcarDevuelto"
+                                style="-fx-background-color: #0A163A; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                    </HBox>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </children>
+</AnchorPane>
