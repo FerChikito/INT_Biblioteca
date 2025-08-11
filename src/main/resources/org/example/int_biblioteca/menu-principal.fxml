@@ -76,7 +76,7 @@
     </center>
     <!-- BARRA SUPERIOR CON BUSCADOR -->
     <top>
-        <HBox alignment="CENTER" spacing="10.0" style="-fx-padding: 10 20; -fx-background-color: #1B2D4F; -fx-border-color: #5B6B86;">
+        <HBox fx:id="barraBusquedaSuperior" alignment="CENTER" spacing="10.0" style="-fx-padding: 10 20; -fx-background-color: #1B2D4F; -fx-border-color: #5B6B86;">
             <children>
                 <ImageView fitHeight="30.0" fitWidth="30.0" translateX="-250.0">
                     <image>
@@ -84,8 +84,8 @@
                     </image>
                 </ImageView>
 
-                <TextField fx:id="buscarField" onAction="#buscarLibro" prefWidth="250.0" promptText="Buscar" style="-fx-background-color: #ffffff; -fx-background-radius: 5;" />
-                <Button mnemonicParsing="false" style="-fx-background-color: #0A163A; -fx-text-fill: white;" text="🔍" />
+                <TextField fx:id="buscarField" onAction="#buscarGlobal" prefWidth="250.0" promptText="Buscar" style="-fx-background-color: #ffffff; -fx-background-radius: 5;" />
+                <Button mnemonicParsing="false" style="-fx-background-color: #0A163A; -fx-text-fill: white;" text="🔍" onAction="#buscarGlobal" />
             </children>
         </HBox>
     </top>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.int_biblioteca.CarritoController"
+            prefWidth="720" prefHeight="520">
+
+    <!-- Top: barra estilo menú -->
+    <top>
+        <HBox spacing="10"
+              style="-fx-padding: 10 20; -fx-background-color: #1B2D4F; -fx-border-color: #5B6B86;">
+            <children>
+                <Label text="Carrito de libros" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+                <Pane HBox.hgrow="ALWAYS"/>
+                <Label text="Total: " style="-fx-text-fill: white; -fx-font-weight: bold;"/>
+                <Label fx:id="etiquetaTotal" style="-fx-text-fill: white;"/>
+            </children>
+        </HBox>
+    </top>
+
+    <!-- Center: tabla -->
+    <center>
+        <StackPane style="-fx-background-color: #091740; -fx-padding: 10;">
+            <TableView fx:id="tablaCarrito" styleClass="carrito" prefHeight="480">
+                <columns>
+                    <TableColumn fx:id="colTitulo" text="Título" prefWidth="300"/>
+                    <TableColumn fx:id="colAutor"  text="Autor"  prefWidth="200"/>
+                    <TableColumn fx:id="colIsbn"   text="ISBN"   prefWidth="170"/>
+                    <TableColumn fx:id="colAccion" text="Quitar" prefWidth="80"/>
+                </columns>
+            </TableView>
+        </StackPane>
+    </center>
+
+    <!-- Bottom: acciones -->
+    <bottom>
+        <HBox spacing="10" alignment="CENTER_RIGHT"
+              style="-fx-padding: 10; -fx-background-color: #091740; -fx-border-color: #5B6B86; -fx-border-width: 1 0 0 0;">
+            <children>
+                <Button text="Vaciar carrito" onAction="#handleVaciar"
+                        style="-fx-background-color: #0A163A; -fx-text-fill: white;"/>
+                <Button text="Confirmar préstamo" onAction="#handleConfirmar"
+                        style="-fx-background-color: #0A163A; -fx-text-fill: white;"/>
+            </children>
+        </HBox>
+    </bottom>
+
+    <padding>
+        <Insets top="0" right="0" bottom="0" left="0"/>
+    </padding>
+</BorderPane>

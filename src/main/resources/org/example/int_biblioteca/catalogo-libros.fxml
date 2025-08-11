@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="520" prefWidth="900" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.int_biblioteca.CatalogoLibrosController">
+
+    <children>
+        <!-- CONTENIDO PRINCIPAL: estilo como tu CRUD-Usuarios -->
+        <ScrollPane fitToHeight="true" fitToWidth="true" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+            <content>
+                <VBox spacing="10">
+                    <padding>
+                        <Insets bottom="10" left="10" right="10" top="10" />
+                    </padding>
+
+                    <!-- Barra de búsqueda: misma estética que la del top del menú -->
+                    <HBox spacing="10" style="-fx-padding: 10 20; -fx-background-color: #1B2D4F; -fx-border-color: #5B6B86;">
+                        <TextField fx:id="campoBusqueda" onAction="#handleBuscar" promptText="Buscar por título, autor o ISBN" style="-fx-background-color: #ffffff; -fx-background-radius: 5;" HBox.hgrow="ALWAYS" />
+                        <Button onAction="#handleBuscar" style="-fx-background-color: #0A163A; -fx-text-fill: white;" text="🔍" />
+                    </HBox>
+
+                    <!-- Tabla -->
+                    <TableView fx:id="tablaCatalogo" prefHeight="420" styleClass="catalogo">
+                        <columns>
+                            <TableColumn fx:id="colTitulo" prefWidth="300" text="Título" />
+                            <TableColumn fx:id="colAutor" prefWidth="220" text="Autor" />
+                            <TableColumn fx:id="colIsbn" prefWidth="220" text="ISBN" />
+                            <TableColumn fx:id="colAcciones" prefWidth="120" text="Acciones" />
+                        </columns>
+                    </TableView>
+
+                    <!-- Pie: contador de resultados -->
+                    <HBox prefHeight="18.0" prefWidth="652.0">
+                        <Label fx:id="etiquetaResultados" text="0 resultados" translateX="800.0" />
+                    </HBox>
+                </VBox>
+            </content>
+        </ScrollPane>
+
+        <!-- BOTÓN FLOTANTE DE CARRITO (emoji). Puedes cambiar a imagen luego -->
+        <Button fx:id="btnCarritoFlotante" onAction="#handleVerCarrito" style="-fx-background-color: #091740; -fx-text-fill: white; -fx-background-radius: 24; -fx-font-size: 16px; -fx-padding: 8 12;" text="🛒" AnchorPane.bottomAnchor="12" AnchorPane.leftAnchor="12" />
+    </children>
+</AnchorPane>

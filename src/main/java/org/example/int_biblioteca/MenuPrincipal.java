@@ -52,6 +52,12 @@ public class MenuPrincipal {
     // Usuario que inició sesión
     private Usuario usuarioActual;
 
+    @FXML
+    private void buscarGlobal() {
+        String q = buscarField.getText() == null ? "" : buscarField.getText().trim();
+        abrirCatalogo(q);
+    }
+
     // Datos simulados de libros
     private List<Libro> libros = new ArrayList<>(List.of(
             new Libro("Cien años de soledad", "Gabriel García Márquez", "978-3-16-148410-0"),
@@ -68,6 +74,7 @@ public class MenuPrincipal {
         if (originalCenter != null && rootPane.getCenter() != originalCenter) {
             rootPane.setCenter(originalCenter);
         }
+        restaurarBarraSuperior(); // <- importante
     }
 
     // Método que se ejecuta al hacer clic en el botón de perfil
@@ -75,37 +82,36 @@ public class MenuPrincipal {
     private void handleBotonPerfil(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("perfil.fxml"));
-
-            // 1) Carga la vista
-            javafx.scene.Parent vista = loader.load();
-
-            // 2) Tipa el controller correctamente
-            org.example.int_biblioteca.PerfilController ctrl = loader.getController();
-
-            // 3) Pasa el usuario y el callback de regresar
+            Parent vista = loader.load();
+            PerfilController ctrl = loader.getController();
             ctrl.setUsuarioActual(usuarioActual);
             ctrl.setOnMostrarVista(v -> rootPane.setCenter(v));
             ctrl.setOnRegresar(() -> {
                 if (originalCenter != null && rootPane.getCenter() != originalCenter) {
                     rootPane.setCenter(originalCenter);
                 }
+                restaurarBarraSuperior(); // <- importante
             });
-
-            // 4) Muestra la vista en el centro
             rootPane.setCenter(vista);
-
+            restaurarBarraSuperior(); // <- importante
         } catch (Exception e) {
-            showAlert(Alert.AlertType.ERROR, "Perfil",
-                    "No se pudo abrir la vista de perfil:\n" + e.getMessage());
-            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Perfil", "No se pudo abrir la vista de perfil:\n" + e.getMessage());
         }
     }
 
     // Método que se ejecuta al hacer clic en el botón de catálogo
     @FXML
     private void handleBotonCatalogoL(ActionEvent event) {
-        // Lógica para acceder al catálogo de libros
-        System.out.println("Botón Catálogo de Libros presionado");
+        abrirCatalogo(null); // entra al catálogo sin búsqueda previa
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("catalogo-libros.fxml"));
+            Parent vista = loader.load();
+            rootPane.setCenter(vista);
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Catálogo",
+                    "No se pudo cargar el catálogo de libros:\n" + e.getMessage());
+        }
     }
 
     // Método para inicializar el slider
@@ -347,4 +353,39 @@ public class MenuPrincipal {
         alert.showAndWait();
     }
 
+    @FXML private HBox barraBusquedaSuperior;
+
+    private Parent catalogoRoot;
+    private CatalogoLibrosController catalogoController;
+
+    private void ocultarBarraSuperior(boolean ocultar) {
+        if (barraBusquedaSuperior != null) {
+            barraBusquedaSuperior.setVisible(!ocultar);
+            barraBusquedaSuperior.setManaged(!ocultar); // que no deje hueco
+        }
     }
+
+    private void restaurarBarraSuperior() { ocultarBarraSuperior(false); }
+
+    private void abrirCatalogo(String query) {
+        try {
+            if (catalogoRoot == null) {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("catalogo-libros.fxml"));
+                catalogoRoot = loader.load();
+                catalogoController = loader.getController();
+            }
+            rootPane.setCenter(catalogoRoot);
+            ocultarBarraSuperior(true); // aquí escondemos la barra del menú
+
+            if (catalogoController != null && query != null && !query.isBlank()) {
+                catalogoController.buscarDesdeExterno(query);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Catálogo", "No se pudo abrir el catálogo:\n" + e.getMessage());
+        }
+    }
+
+
+
+}
