@@ -13,6 +13,7 @@ import javafx.scene.text.FontWeight;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.example.int_biblioteca.dao.LibroDAO;
 
 public class MenuPrincipal {
     // Declaración de los componentes de la interfaz
@@ -59,12 +60,6 @@ public class MenuPrincipal {
             new Libro("Harry Potter y la piedra filosofal", "J.K. Rowling", "978-0-7475-3269-9"),
             new Libro("Fahrenheit 451", "Ray Bradbury", "978-0-7432-4722-1")
     ));
-
-    // Setter para recibir el usuario desde el login
-    public void setUsuario(Usuario usuario) {
-        this.usuarioActual = usuario;
-        mostrarBotonesDeEdicion(); // Aquí ya tenemos el usuario y podemos mostrar los botones
-    }
 
     // Método que se ejecuta al hacer clic en el botón de menú
     @FXML
@@ -177,17 +172,13 @@ public class MenuPrincipal {
     // Buscar libros por título, autor o ISBN
     @FXML
     private void buscarLibro() {
-        String termino = buscarField.getText() == null ? "" : buscarField.getText().trim();
+        String query = buscarField.getText().trim();
         infoP.getChildren().clear();
 
-        if (termino.isEmpty()) {
-            cargarTexto();
-            return;
-        }
+        if (query.isEmpty()) { cargarTexto(); return; }
 
         try {
-            List<Libro> resultados = org.example.int_biblioteca.dao.LibroDAO.buscar(termino);
-
+            var resultados = LibroDAO.buscar(query);
             if (resultados.isEmpty()) {
                 Label noResultado = new Label("No se encontraron libros.");
                 noResultado.setStyle("-fx-font-style: italic;");
@@ -195,50 +186,38 @@ public class MenuPrincipal {
             } else {
                 for (Libro libro : resultados) {
                     String texto = libro.getTitulo() + " | " + libro.getAutor() + " | ISBN: " + libro.getIsbn();
-                    Label etiqueta = new Label("• " + texto);
-                    etiqueta.setStyle("-fx-font-size: 14px;");
-                    infoP.getChildren().add(etiqueta);
+                    Label label = new Label("• " + texto);
+                    label.setStyle("-fx-font-size: 14px;");
+                    infoP.getChildren().add(label);
                 }
             }
         } catch (Exception e) {
-            showAlert(Alert.AlertType.ERROR, "Base de datos", "No se pudo realizar la búsqueda:\n" + e.getMessage());
-            cargarTexto(); // fallback
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Búsqueda", "No se pudo buscar en la base de datos:\n" + e.getMessage());
         }
+    }
+
+
+    public void setUsuario(Usuario usuario) {
+        this.usuarioActual = usuario;
+        mostrarBotonesDeEdicion();
     }
 
 
     // Muestra botón de edición solo si es admin
     private void mostrarBotonesDeEdicion() {
-        if (usuarioActual == null) {
-            // ocultar todo lo “especial” si no hay sesión
-            if (botonUsuarios   != null) botonUsuarios.setVisible(false);
-            if (editarInfoBtn   != null) editarInfoBtn.setVisible(false);
-            if (editarSliderBtn != null) editarSliderBtn.setVisible(false);
-            if (editarLibrosBtn != null) editarLibrosBtn.setVisible(false);
-            return;
-        }
+        Rol r = (usuarioActual != null) ? usuarioActual.getRol() : Rol.USUARIO;
 
-        Rol rol = usuarioActual.getRol();
-        boolean esSuperAdmin   = rol == Rol.SUPER_ADMIN;
-        boolean esAdmin        = rol == Rol.ADMIN;
-        boolean esBibliotecario= rol == Rol.BIBLIOTECARIO;
+        boolean verUsuarios     = (r == Rol.SUPER_ADMIN || r == Rol.ADMIN || r == Rol.BIBLIOTECARIO);
+        boolean verEditarLibros = (r == Rol.SUPER_ADMIN || r == Rol.ADMIN);
+        boolean verEditarSlider = (r == Rol.SUPER_ADMIN || r == Rol.ADMIN);
+        boolean verEditarInfo   = (r == Rol.SUPER_ADMIN || r == Rol.ADMIN);
 
-        // Reglas del cliente:
-        // SUPER_ADMIN: todo
-        // ADMIN: CRUD de bibliotecarios y libros (aquí: edición de libros/info/slider)
-        // BIBLIOTECARIO: CRUD de usuarios (aquí: botón Usuarios)
-        // USUARIO: sin botones extra
-
-        if (botonUsuarios   != null) botonUsuarios.setVisible(esBibliotecario || esAdmin || esSuperAdmin);
-        if (editarLibrosBtn != null) editarLibrosBtn.setVisible(esAdmin || esSuperAdmin);
-        if (editarInfoBtn   != null) editarInfoBtn.setVisible(esAdmin || esSuperAdmin);
-        if (editarSliderBtn != null) editarSliderBtn.setVisible(esAdmin || esSuperAdmin);
-    }
-
-    private void showPane(Node pane) {
-        for (Node child : centerStack.getChildren()) {
-            child.setVisible(child == pane);
-        }
+        if (editarLibrosBtn != null)  editarLibrosBtn.setVisible(verEditarLibros);
+        if (editarSliderBtn != null)  editarSliderBtn.setVisible(verEditarSlider);
+        if (editarInfoBtn != null)    editarInfoBtn.setVisible(verEditarInfo);
+        if (botonEditar != null)      botonEditar.setVisible(verEditarInfo);
+        if (botonUsuarios != null)    botonUsuarios.setVisible(verUsuarios);
     }
 
     // Acciones para botones de edición (solo admin)

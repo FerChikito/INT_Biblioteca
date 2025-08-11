@@ -59,34 +59,31 @@ public final class LibroDAO {
         return out;
     }
 
-    public static List<Libro> buscar(String termino) throws SQLException {
-        final String sql = """
-        SELECT ID_LIBRO, ISBN, TITULO, AUTOR
-          FROM LIBROS
-         WHERE UPPER(TITULO) LIKE ?
-            OR UPPER(AUTOR)  LIKE ?
-            OR UPPER(ISBN)   LIKE ?
-         ORDER BY TITULO
+    public static List<Libro> buscar(String q) throws SQLException {
+        String like = "%" + q.toUpperCase() + "%";
+        String sql = """
+            SELECT ID_LIBRO, TITULO, AUTOR, ISBN
+            FROM LIBROS
+            WHERE UPPER(TITULO) LIKE ? OR UPPER(AUTOR) LIKE ? OR UPPER(ISBN) LIKE ?
+            ORDER BY TITULO
         """;
-        String patron = "%" + termino.trim().toUpperCase() + "%";
-
-        List<Libro> resultados = new ArrayList<>();
         try (Connection c = Database.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
-            ps.setString(1, patron);
-            ps.setString(2, patron);
-            ps.setString(3, patron);
+            ps.setString(1, like);
+            ps.setString(2, like);
+            ps.setString(3, like);
             try (ResultSet rs = ps.executeQuery()) {
+                List<Libro> out = new ArrayList<>();
                 while (rs.next()) {
-                    resultados.add(new Libro(
+                    out.add(new Libro(
                             rs.getString("TITULO"),
                             rs.getString("AUTOR"),
                             rs.getString("ISBN")
                     ));
                 }
+                return out;
             }
         }
-        return resultados;
     }
 
 }

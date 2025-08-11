@@ -7,77 +7,95 @@ import org.example.int_biblioteca.Rol;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public final class UsuarioDAO {
-    private UsuarioDAO() { }
+    private UsuarioDAO() {}
 
-    /** Inserta usando NOMBRE (único), CONTRASENIA y ROL */
-    public static boolean insertar(Usuario usuario) throws SQLException {
-        final String sql = "INSERT INTO USUARIOS (NOMBRE, CONTRASENIA, ROL) VALUES (?, ?, ?)";
-        try (Connection conexion = Database.getConnection();
-             PreparedStatement prepareStatement = conexion .prepareStatement(sql)) {
-            prepareStatement.setString(1, usuario.getNombre());
-            prepareStatement.setString(2, usuario.getContrasenia());   // <-- OJO: contrasenia
-            prepareStatement.setString(3, usuario.getRol().name());    // guarda el enum como texto
-            return prepareStatement.executeUpdate() == 1;
-        }
+    private static Usuario map(ResultSet rs) throws SQLException {
+        return new Usuario(
+                rs.getString("NOMBRE"),
+                rs.getString("CORREO"),
+                rs.getString("NUMERO_TELEFONICO"),
+                rs.getString("DIRECCION"),
+                rs.getString("CONTRASENIA"),
+                Rol.fromDb(rs.getString("ROL"))
+        );
     }
 
-    /** Actualiza por nombre (clave lógica) */
-    public static boolean actualizar(String nombreOriginal, Usuario nuevoUsuario) throws SQLException {
-        final String sql = "UPDATE USUARIOS SET NOMBRE = ?, CONTRASENIA = ?, ROL = ? WHERE NOMBRE = ?";
-        try (Connection conexion  = Database.getConnection();
-             PreparedStatement prepareStatement = conexion .prepareStatement(sql)) {
-            prepareStatement.setString(1, nuevoUsuario.getNombre());
-            prepareStatement.setString(2, nuevoUsuario.getContrasenia());
-            prepareStatement.setString(3, nuevoUsuario.getRol().name());
-            prepareStatement.setString(4, nombreOriginal);
-            return prepareStatement.executeUpdate() == 1;
-        }
-    }
-
-    /** Elimina por nombre */
-    public static boolean eliminar(String nombreUsuario) throws SQLException {
-        final String sql = "DELETE FROM USUARIOS WHERE NOMBRE = ?";
-        try (Connection conexion  = Database.getConnection();
-             PreparedStatement prepareStatement = conexion .prepareStatement(sql)) {
-            prepareStatement.setString(1, nombreUsuario);
-            return prepareStatement.executeUpdate() == 1;
-        }
-    }
-
-    /** Obtiene un usuario por nombre */
-    public static Usuario obtener(String nombreUsuario) throws SQLException {
-        final String sql = "SELECT NOMBRE, CONTRASENIA, ROL FROM USUARIOS WHERE NOMBRE = ?";
-        try (Connection conexion = Database.getConnection();
-             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
-            sentencia.setString(1, nombreUsuario);
-            try (ResultSet rs = sentencia.executeQuery()) {
-                if (!rs.next()) return null;
-                return new Usuario(
-                        rs.getString("NOMBRE"),
-                        rs.getString("CONTRASENIA"),
-                        Rol.valueOf(rs.getString("ROL"))
-                );
+    public static Optional<Usuario> autenticar(String correo, String contrasenia) throws SQLException {
+        String sql = """
+            SELECT NOMBRE, CORREO, NUMERO_TELEFONICO, DIRECCION, CONTRASENIA, ROL
+            FROM USUARIOS
+            WHERE CORREO = ? AND CONTRASENIA = ?
+        """;
+        try (Connection c = Database.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, correo);
+            ps.setString(2, contrasenia);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() ? Optional.of(map(rs)) : Optional.empty();
             }
         }
     }
 
-    /** Lista completa (ordenada por nombre) */
     public static List<Usuario> listar() throws SQLException {
-        final String sql = "SELECT NOMBRE, CONTRASENIA, ROL FROM USUARIOS ORDER BY NOMBRE";
-        List<Usuario> usuarios  = new ArrayList<Usuario>();
-        try (Connection conexion  = Database.getConnection();
-             PreparedStatement sentencia  = conexion .prepareStatement(sql);
-             ResultSet rs = sentencia .executeQuery()) {
-            while (rs.next()) {
-                usuarios.add(new Usuario(
-                        rs.getString("NOMBRE"),
-                        rs.getString("CONTRASENIA"),
-                        Rol.valueOf(rs.getString("ROL"))
-                ));
-            }
+        String sql = """
+            SELECT NOMBRE, CORREO, NUMERO_TELEFONICO, DIRECCION, CONTRASENIA, ROL
+            FROM USUARIOS
+            ORDER BY NOMBRE
+        """;
+        try (Connection c = Database.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            List<Usuario> out = new ArrayList<>();
+            while (rs.next()) out.add(map(rs));
+            return out;
         }
-        return usuarios;
+    }
+
+    public static boolean insertar(Usuario u) throws SQLException {
+        String sql = """
+            INSERT INTO USUARIOS (NOMBRE, CORREO, NUMERO_TELEFONICO, DIRECCION, CONTRASENIA, ROL)
+            VALUES (?, ?, ?, ?, ?, ?)
+        """;
+        try (Connection c = Database.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, u.getNombre());
+            ps.setString(2, u.getCorreo());
+            ps.setString(3, u.getNumeroTelefonico());
+            ps.setString(4, u.getDireccion());
+            ps.setString(5, u.getContrasenia());
+            ps.setString(6, u.getRol().name());
+            return ps.executeUpdate() == 1;
+        }
+    }
+
+    public static boolean actualizarPorCorreo(String correoOriginal, Usuario u) throws SQLException {
+        String sql = """
+            UPDATE USUARIOS
+               SET NOMBRE=?, CORREO=?, NUMERO_TELEFONICO=?, DIRECCION=?, CONTRASENIA=?, ROL=?
+             WHERE CORREO=?
+        """;
+        try (Connection c = Database.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, u.getNombre());
+            ps.setString(2, u.getCorreo());
+            ps.setString(3, u.getNumeroTelefonico());
+            ps.setString(4, u.getDireccion());
+            ps.setString(5, u.getContrasenia());
+            ps.setString(6, u.getRol().name());
+            ps.setString(7, correoOriginal);
+            return ps.executeUpdate() == 1;
+        }
+    }
+
+    public static boolean eliminarPorCorreo(String correo) throws SQLException {
+        String sql = "DELETE FROM USUARIOS WHERE CORREO=?";
+        try (Connection c = Database.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, correo);
+            return ps.executeUpdate() == 1;
+        }
     }
 }
