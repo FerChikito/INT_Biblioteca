@@ -2,39 +2,55 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="org.example.int_biblioteca.RegistroController"
-            prefWidth="400" prefHeight="600"
-            stylesheets="@styles/estilos.css">
+<?import javafx.scene.text.*?>
 
-    <VBox alignment="TOP_CENTER" spacing="15.0" layoutX="50" layoutY="30">
-        <Label text="Crear cuenta" styleClass="titulo"/>
+<AnchorPane prefHeight="492.0" prefWidth="307.0" stylesheets="@styles/estilos.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.int_biblioteca.RegistroController">
 
-        <TextField fx:id="nombreField" promptText="Nombre"/>
-        <TextField fx:id="apellidoField" promptText="Apellido"/>
-        <DatePicker fx:id="fechaNacimientoPicker" promptText="Fecha de nacimiento"/>
-        <TextField fx:id="correoField" promptText="Correo electrónico"/>
-        <TextField fx:id="confirmarCorreoField" promptText="Confirmar correo electrónico"/>
+    <VBox alignment="TOP_CENTER" layoutX="50" layoutY="30" spacing="15.0">
+        <Label styleClass="titulo" text="Crear cuenta" />
+
+        <TextField fx:id="nombreField" promptText="Nombre Completo" />
+        <DatePicker fx:id="fechaNacimientoPicker" prefWidth="212.0" promptText="Fecha de nacimiento" />
+        <TextField fx:id="correoField" promptText="Correo electrónico" />
+        <TextField fx:id="confirmarCorreoField" promptText="Confirmar correo electrónico" />
 
         <!-- Contraseña con botón de mostrar/ocultar -->
         <HBox spacing="5">
-            <PasswordField fx:id="passwordField" promptText="Contraseña"/>
-            <Button fx:id="togglePassBtn" onAction="#togglePassword" text="👁"/>
+            <AnchorPane>
+                <children>
+                    <!-- Campo visible (inicia oculto) -->
+                    <TextField fx:id="verPass" managed="false" prefHeight="26.0" prefWidth="184.0" promptText="contraseña" visible="false" />
+                    <!-- Campo oculto (PasswordField) -->
+                    <PasswordField fx:id="passwordField" prefHeight="26.0" prefWidth="184.0" promptText="contraseña" />
+                    <Button fx:id="ojito" layoutX="180.0" onAction="#giño" prefHeight="26.0" prefWidth="35.0" text="👀">
+                        <font><Font size="10.0" /></font>
+                    </Button>
+                </children>
+            </AnchorPane>
         </HBox>
+
+        <!-- Confirmar contraseña con botón de mostrar/ocultar -->
         <HBox spacing="5">
-            <PasswordField fx:id="confirmPasswordField" promptText="Confirmar contraseña"/>
-            <Button fx:id="toggleConfirmPassBtn" onAction="#toggleConfirmPassword" text="👁"/>
+            <AnchorPane>
+                <children>
+                    <!-- Campo visible (inicia oculto) -->
+                    <TextField fx:id="verPassConfi" managed="false" prefHeight="26.0" prefWidth="184.0" promptText="confirmar contraseña" visible="false" />
+                    <!-- Campo oculto (PasswordField) -->
+                    <PasswordField fx:id="confirmPasswordField" prefHeight="26.0" prefWidth="184.0" promptText="confirmar contraseña" />
+                    <Button fx:id="ojitoconfi" layoutX="180.0" onAction="#verPassConfi" prefHeight="26.0" prefWidth="35.0" text="👀" />
+                </children>
+            </AnchorPane>
         </HBox>
 
         <!-- Checkbox de términos -->
-        <HBox spacing="10" alignment="CENTER_LEFT">
-            <CheckBox fx:id="terminosCheck"/>
-            <Label text="Aceptar términos y condiciones"/>
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <CheckBox fx:id="terminosCheck" />
+            <Label text="Aceptar términos y condiciones" />
         </HBox>
 
-        /Falta verificar las contraseñas y el correo electrónico antes de registrar
+        <Button fx:id="registrarBtn" onAction="#handleRegisterFromForm" styleClass="boton-registrar" text="Registrar" />
 
-        <Button fx:id="registrarBtn" text="Registrar" styleClass="boton-registrar"/>
+        <!-- Volver a iniciar sesión -->
+        <Hyperlink onAction="#volverLogin" text="Volver a iniciar sesión" />
     </VBox>
 </AnchorPane>

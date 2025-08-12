@@ -79,38 +79,6 @@ public class HelloController {
         }
     }
 
-    // ===== Registro: inserta en USUARIOS usando UsuarioDAO =====
-    @FXML
-    protected void handleRegisterFromForm(ActionEvent event) {
-        String nombre = safe(fullNameField.getText());
-        String correo = safe(emailField.getText());
-        String tel    = safe(phoneField.getText());
-        String dir    = safe(addressField.getText());
-        String pass   = passwordFieldReg.getText() == null ? "" : passwordFieldReg.getText();
-        String confirm= confirmPasswordField.getText() == null ? "" : confirmPasswordField.getText();
-
-        if (nombre.isEmpty() || correo.isEmpty() || pass.isEmpty()) {
-            showAlert(Alert.AlertType.WARNING, "Validación", "Nombre, correo y contraseña son obligatorios.");
-            return;
-        }
-        if (!pass.equals(confirm)) {
-            showAlert(Alert.AlertType.ERROR, "Error", "Las contraseñas no coinciden");
-            return;
-        }
-
-        try {
-            boolean ok = UsuarioDAO.insertar(new Usuario(nombre, correo, tel, dir, pass, Rol.USUARIO));
-            if (ok) {
-                showAlert(Alert.AlertType.INFORMATION, "Registro", "Usuario registrado con éxito");
-                cambiarEscena("hello-view.fxml", event);
-            } else {
-                showAlert(Alert.AlertType.ERROR, "Registro", "No se pudo registrar (revisa si el correo ya existe).");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Registro", "Error al registrar:\n" + e.getMessage());
-        }
-    }
 
     @FXML
     protected void handleRegister(ActionEvent event) {

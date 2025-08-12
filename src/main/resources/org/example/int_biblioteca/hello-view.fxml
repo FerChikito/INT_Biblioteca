@@ -39,7 +39,6 @@
                     </AnchorPane>
                 </children>
             </HBox>
-            <Hyperlink text="Olvidé mi contraseña" translateX="-25.0" translateY="35.0" />
             <CheckBox mnemonicParsing="false" text="Recordarme" translateX="-25.0" translateY="45.0" />
             <Hyperlink onAction="#handleRegister" text="¿No tienes cuenta? Regístrate." translateY="50.0" />
             <Button mnemonicParsing="false" onAction="#handleLogin" prefHeight="26.0" prefWidth="175.0" text="Iniciar sesión" translateX="5.0" translateY="60.0" />

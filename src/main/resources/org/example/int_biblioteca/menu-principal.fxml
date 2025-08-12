@@ -68,19 +68,54 @@
                     <font><Font size="13.0"/></font>
                 </Button>
 
+                <!-- Empuja el botón de cerrar sesión hasta abajo -->
+                <Pane VBox.vgrow="ALWAYS"/>
+
+                <!-- Cerrar sesión -->
+                <Button fx:id="btnLogout"
+                        mnemonicParsing="false"
+                        onAction="#handleCerrarSesion"
+                        prefHeight="56.0" prefWidth="144.0"
+                        style="-fx-background-color: #091740; -fx-border-color: #ffffff; -fx-border-width: 2 0 0 0;"
+                        text="⎋  Cerrar sesión" textFill="WHITE">
+                    <font><Font size="13.0"/></font>
+                </Button>
+
             </children>
         </VBox>
     </left>
     <center>
-        <AnchorPane prefHeight="427.0" prefWidth="110.0" style="-fx-border-color: #5B6B86; -fx-background-color: #091740; -fx-border-width: 10px 0px 0px 10px;" BorderPane.alignment="CENTER">
+        <!-- Centro responsive: anclado y con VBox que reparte el alto -->
+        <AnchorPane style="-fx-border-color: #5B6B86; -fx-background-color: #091740; -fx-border-width: 10 0 0 10;">
             <children>
-                <VBox alignment="CENTER" layoutX="23.0" layoutY="14.0" prefHeight="110.0" prefWidth="666.0" style="-fx-background-color: #ffffff;" translateY="20.0">
-                    <children>
-                        <HBox fx:id="sliderContainer" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" />
-                    </children>
+                <VBox spacing="12"
+                      AnchorPane.topAnchor="12" AnchorPane.bottomAnchor="12"
+                      AnchorPane.leftAnchor="12" AnchorPane.rightAnchor="12">
+
+                    <!-- Contenedor del slider: crece en alto y ancho -->
+                    <StackPane style="-fx-background-color: #ffffff; -fx-background-radius: 6;"
+                               minHeight="220" VBox.vgrow="ALWAYS">
+                        <!-- IMPORTANTE: este HBox existe para que tu controlador inserte el slider.fxml -->
+                        <HBox fx:id="sliderContainer" alignment="CENTER"
+                              fillHeight="true" VBox.vgrow="ALWAYS"/>
+                    </StackPane>
+
+                    <!-- InfoP: con scroll y creciendo a lo alto -->
+                    <ScrollPane fitToWidth="true" fitToHeight="true"
+                                style="-fx-background-color: transparent; -fx-background: transparent;"
+                                VBox.vgrow="ALWAYS">
+                        <content>
+                            <VBox fx:id="infoP" spacing="8"
+                                  minHeight="260"
+                                  style="-fx-background-color: #ffffff; -fx-background-radius: 6; -fx-padding: 16; -fx-border-color: #e4e8f0; -fx-border-radius: 6;">
+                                <!-- Placeholder (tu controlador lo reemplaza con cargarTexto()) -->
+                                <Label text="Cargando información..." style="-fx-text-fill: #1B2D4F;"/>
+                            </VBox>
+                        </content>
+                    </ScrollPane>
                 </VBox>
-            <VBox fx:id="infoP" alignment="CENTER" layoutX="23.0" layoutY="166.0" prefHeight="200.0" prefWidth="668.0" style="-fx-background-color: #fff;" />
-            </children></AnchorPane>
+            </children>
+        </AnchorPane>
     </center>
     <!-- BARRA SUPERIOR CON BUSCADOR -->
     <top>
