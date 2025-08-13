@@ -7,7 +7,7 @@
 <AnchorPane xmlns="http://javafx.com/javafx/17.0.12"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.example.int_biblioteca.MisPrestamosController"
-            prefWidth="700" prefHeight="500">
+            prefWidth="780" prefHeight="520">
     <children>
         <ScrollPane fitToWidth="true" fitToHeight="true"
                     AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
@@ -18,20 +18,26 @@
                         <Insets top="10" right="10" bottom="10" left="10"/>
                     </padding>
 
-                    <Label fx:id="etiquetaResultados"
-                           text="Resultados (0)"
-                           style="-fx-font-size: 16px; -fx-text-fill: #1B2D4F; -fx-font-weight: bold;"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Buscar:"/>
+                        <TextField fx:id="buscarPrestamosField" promptText="título, ISBN, folio, correo o estado" prefWidth="260"/>
+                        <Pane HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="etiquetaResultados"
+                               text="Resultados (0)"
+                               style="-fx-font-size: 16px; -fx-text-fill: #1B2D4F; -fx-font-weight: bold;"/>
+                    </HBox>
 
-                    <TableView fx:id="tablaPrestamos" prefHeight="360" prefWidth="680">
+                    <TableView fx:id="tablaPrestamos" prefHeight="380" prefWidth="760">
                         <columns>
-                            <TableColumn fx:id="colId"            text="Folio"          prefWidth="70"/>
-                            <TableColumn fx:id="colTitulo"        text="Título"         prefWidth="220"/>
-                            <TableColumn fx:id="colIsbn"          text="ISBN"           prefWidth="160"/>
-                            <TableColumn fx:id="colFechaPrestamo" text="Fecha préstamo" prefWidth="120"/>
-                            <TableColumn fx:id="colFechaDevol"    text="Fecha devolución" prefWidth="120"/>
-                            <TableColumn fx:id="colEstado"        text="Estado"         prefWidth="80"/>
-                            <TableColumn fx:id="colFolio" text="Folio" prefWidth="160"/>
-                            <TableColumn fx:id="colLimite" text="Recoger antes de" prefWidth="160"/>
+                            <TableColumn fx:id="colId"            text="ID"              prefWidth="70"/>
+                            <TableColumn fx:id="colTitulo"        text="Título"          prefWidth="220"/>
+                            <TableColumn fx:id="colIsbn"          text="ISBN"            prefWidth="120"/>
+                            <TableColumn fx:id="colFechaPrestamo" text="Fecha préstamo"  prefWidth="130"/>
+                            <TableColumn fx:id="colLimite"        text="Recoger antes de" prefWidth="120"/>
+                            <TableColumn fx:id="colFechaDevol"    text="Fecha devolución" prefWidth="130"/>
+                            <TableColumn fx:id="colEstado"        text="Estado"          prefWidth="90"/>
+                            <TableColumn fx:id="colFolio"         text="Folio"           prefWidth="160"/>
+                            <TableColumn fx:id="colMulta"         text="Multa"           prefWidth="90"/>
                         </columns>
                     </TableView>
 

@@ -5,110 +5,83 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="522.0" prefWidth="904.0" style="-fx-background-color: #5B6B86;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.int_biblioteca.MenuPrincipal">
+<BorderPane fx:id="rootPane" prefHeight="522.0" prefWidth="904.0" style="-fx-background-color: #5B6B86;"
+            xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.int_biblioteca.MenuPrincipal">
     <left>
-        <VBox prefHeight="400.0" prefWidth="144.0" style="-fx-background-color: #091740; -fx-border-color: #5B6B86; -fx-border-width: 10px 0px 0px 0px;" BorderPane.alignment="CENTER">
+        <VBox prefWidth="160.0" style="-fx-background-color: #091740; -fx-border-color: #5B6B86; -fx-border-width: 10 0 0 0;">
             <children>
-                <Button fx:id="botonMenu" mnemonicParsing="false" onAction="#handleBotonMenu" prefHeight="66.0" prefWidth="144.0" style="-fx-background-color: #091740; -fx-border-color: #ffffff; -fx-border-width: 0px 0px 2px 0px;" text="Menú ☰" textFill="WHITE">
-                    <font>
-                        <Font size="20.0" />
-                    </font>
-                </Button>
-                <Button fx:id="botonPerfil" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#handleBotonPerfil" prefHeight="66.0" prefWidth="144.0" style="-fx-background-color: #091740; -fx-border-color: #ffffff; -fx-border-width: 0px 0px 2px 0px;" text="Perfil 👤" textFill="WHITE">
-                    <font>
-                        <Font size="13.0" />
-                    </font>
-                </Button>
-                <Button fx:id="botonCatalogoL" layoutX="10.0" layoutY="76.0" mnemonicParsing="false" onAction="#handleBotonCatalogoL" prefHeight="66.0" prefWidth="144.0" style="-fx-background-color: #091740; -fx-border-color: #ffffff; -fx-border-width: 0px 0px 2px 0px;" text="Catalogo de Libros" textFill="WHITE">
-                    <font>
-                        <Font size="13.0" />
-                    </font>
-                </Button>
-                <Button mnemonicParsing="false"
-                        onAction="#abrirMisPrestamos"
-                        prefHeight="66.0" prefWidth="144.0"
+                <Button fx:id="botonMenu" onAction="#handleBotonMenu" prefHeight="56.0" prefWidth="160.0"
                         style="-fx-background-color: #091740; -fx-border-color: #ffffff; -fx-border-width: 0 0 2 0;"
-                        text="Mis Préstamos" textFill="WHITE">
-                    <font><Font size="13.0"/></font>
+                        text="Menú ☰" textFill="WHITE">
+                    <font><Font size="18.0"/></font>
                 </Button>
+                <Button fx:id="botonPerfil" onAction="#handleBotonPerfil" prefHeight="52.0" prefWidth="160.0"
+                        style="-fx-background-color: #091740; -fx-border-color: #ffffff; -fx-border-width: 0 0 2 0;"
+                        text="Perfil 👤" textFill="WHITE"/>
+                <Button fx:id="botonCatalogoL" onAction="#handleBotonCatalogoL" prefHeight="52.0" prefWidth="160.0"
+                        style="-fx-background-color: #091740; -fx-border-color: #ffffff; -fx-border-width: 0 0 2 0;"
+                        text="Catálogo" textFill="WHITE"/>
 
-                <!-- Botón CRUD Usuarios (BIBLIOTECARIO/ADMIN/SUPER_ADMIN) -->
+                <Button text="Mis Préstamos" onAction="#abrirMisPrestamos" prefHeight="52.0" prefWidth="160.0"
+                        style="-fx-background-color: #091740; -fx-border-color: #ffffff; -fx-border-width: 0 0 2 0;"
+                        textFill="WHITE"/>
+
                 <Button fx:id="botonUsuarios" visible="false" managed="false"
-                        mnemonicParsing="false" onAction="#abrirUsuarios"
-                        prefHeight="66.0" prefWidth="144.0"
+                        onAction="#abrirUsuarios" prefHeight="52.0" prefWidth="160.0"
                         style="-fx-background-color: #091740; -fx-border-color: #ffffff; -fx-border-width: 0 0 2 0;"
-                        text="Usuarios 👥" textFill="WHITE">
-                    <font><Font size="13.0"/></font>
-                </Button>
+                        text="Usuarios 👥" textFill="WHITE"/>
 
-                <!-- Botón Editar Libros (ADMIN/SUPER_ADMIN) -->
                 <Button fx:id="editarLibrosBtn" visible="false" managed="false"
-                        mnemonicParsing="false" onAction="#handleEditarLibros"
-                        prefHeight="66.0" prefWidth="144.0"
+                        onAction="#handleEditarLibros" prefHeight="52.0" prefWidth="160.0"
                         style="-fx-background-color: #091740; -fx-border-color: #ffffff; -fx-border-width: 0 0 2 0;"
-                        text="Editar Libros ✏️" textFill="WHITE">
-                    <font><Font size="13.0"/></font>
-                </Button>
+                        text="Editar Libros ✏️" textFill="WHITE"/>
 
-                <!-- Botón Editar Info (ADMIN/SUPER_ADMIN) -->
                 <Button fx:id="editarInfoBtn" visible="false" managed="false"
-                        mnemonicParsing="false" onAction="#handleEditarInfo"
-                        prefHeight="66.0" prefWidth="144.0"
+                        onAction="#handleEditarInfo" prefHeight="52.0" prefWidth="160.0"
                         style="-fx-background-color: #091740; -fx-border-color: #ffffff; -fx-border-width: 0 0 2 0;"
-                        text="Editar Info 📝" textFill="WHITE">
-                    <font><Font size="13.0"/></font>
-                </Button>
+                        text="Editar Info 📝" textFill="WHITE"/>
 
-                <!-- Botón Editar Slider (ADMIN/SUPER_ADMIN) -->
                 <Button fx:id="editarSliderBtn" visible="false" managed="false"
-                        mnemonicParsing="false" onAction="#handleEditarSlider"
-                        prefHeight="66.0" prefWidth="144.0"
+                        onAction="#handleEditarSlider" prefHeight="52.0" prefWidth="160.0"
                         style="-fx-background-color: #091740; -fx-border-color: #ffffff; -fx-border-width: 0 0 2 0;"
-                        text="Editar Slider 🖼️" textFill="WHITE">
-                    <font><Font size="13.0"/></font>
-                </Button>
+                        text="Editar Slider 🖼️" textFill="WHITE"/>
 
-                <!-- Empuja el botón de cerrar sesión hasta abajo -->
+                <Button fx:id="btnConfigMulta" visible="false" managed="false"
+                        onAction="#handleEditarTarifaMulta" prefHeight="52.0" prefWidth="160.0"
+                        style="-fx-background-color: #091740; -fx-border-color: #ffffff; -fx-border-width: 0 0 2 0;"
+                        text="Tarifa multa ⚖️" textFill="WHITE"/>
+
+                <Button fx:id="btnConfigDias" visible="false" managed="false"
+                        onAction="#handleEditarDiasLimite" prefHeight="52.0" prefWidth="160.0"
+                        style="-fx-background-color: #091740; -fx-border-color: #ffffff; -fx-border-width: 0 0 2 0;"
+                        text="Días límite 📅" textFill="WHITE"/>
+
                 <Pane VBox.vgrow="ALWAYS"/>
-
-                <!-- Cerrar sesión -->
-                <Button fx:id="btnLogout"
-                        mnemonicParsing="false"
-                        onAction="#handleCerrarSesion"
-                        prefHeight="56.0" prefWidth="144.0"
+                <Button fx:id="btnLogout" onAction="#handleCerrarSesion" prefHeight="52.0" prefWidth="160.0"
                         style="-fx-background-color: #091740; -fx-border-color: #ffffff; -fx-border-width: 2 0 0 0;"
-                        text="⎋  Cerrar sesión" textFill="WHITE">
-                    <font><Font size="13.0"/></font>
-                </Button>
-
+                        text="⎋  Cerrar sesión" textFill="WHITE"/>
             </children>
         </VBox>
     </left>
+
     <center>
-        <!-- Centro responsive: anclado y con VBox que reparte el alto -->
         <AnchorPane style="-fx-border-color: #5B6B86; -fx-background-color: #091740; -fx-border-width: 10 0 0 10;">
             <children>
-                <VBox spacing="12"
-                      AnchorPane.topAnchor="12" AnchorPane.bottomAnchor="12"
+                <VBox spacing="12" AnchorPane.topAnchor="12" AnchorPane.bottomAnchor="12"
                       AnchorPane.leftAnchor="12" AnchorPane.rightAnchor="12">
-
-                    <!-- Contenedor del slider: crece en alto y ancho -->
+                    <!-- ACHICADO -->
                     <StackPane style="-fx-background-color: #ffffff; -fx-background-radius: 6;"
-                               minHeight="220" VBox.vgrow="ALWAYS">
-                        <!-- IMPORTANTE: este HBox existe para que tu controlador inserte el slider.fxml -->
-                        <HBox fx:id="sliderContainer" alignment="CENTER"
-                              fillHeight="true" VBox.vgrow="ALWAYS"/>
+                               minHeight="160" VBox.vgrow="NEVER">
+                        <HBox fx:id="sliderContainer" alignment="CENTER" fillHeight="true"/>
                     </StackPane>
 
-                    <!-- InfoP: con scroll y creciendo a lo alto -->
                     <ScrollPane fitToWidth="true" fitToHeight="true"
                                 style="-fx-background-color: transparent; -fx-background: transparent;"
                                 VBox.vgrow="ALWAYS">
                         <content>
-                            <VBox fx:id="infoP" spacing="8"
-                                  minHeight="260"
+                            <VBox fx:id="infoP" spacing="8" minHeight="260"
                                   style="-fx-background-color: #ffffff; -fx-background-radius: 6; -fx-padding: 16; -fx-border-color: #e4e8f0; -fx-border-radius: 6;">
-                                <!-- Placeholder (tu controlador lo reemplaza con cargarTexto()) -->
                                 <Label text="Cargando información..." style="-fx-text-fill: #1B2D4F;"/>
                             </VBox>
                         </content>
@@ -117,25 +90,21 @@
             </children>
         </AnchorPane>
     </center>
-    <!-- BARRA SUPERIOR CON BUSCADOR -->
+
     <top>
-        <HBox fx:id="barraBusquedaSuperior" alignment="CENTER" spacing="10.0" style="-fx-padding: 10 20; -fx-background-color: #1B2D4F; -fx-border-color: #5B6B86;">
+        <HBox fx:id="barraBusquedaSuperior" alignment="CENTER" spacing="10.0"
+              style="-fx-padding: 10 20; -fx-background-color: #1B2D4F; -fx-border-color: #5B6B86;">
             <children>
                 <ImageView fitHeight="30.0" fitWidth="30.0" translateX="-250.0">
-                    <image>
-                        <Image url="@../../../Logo/LogoB.jpg" />
-                    </image>
+                    <image><Image url="@../../../Logo/LogoB.jpg" /></image>
                 </ImageView>
-
-                <TextField fx:id="buscarField" onAction="#buscarGlobal" prefWidth="250.0" promptText="Buscar" style="-fx-background-color: #ffffff; -fx-background-radius: 5;" />
-                <Button mnemonicParsing="false" style="-fx-background-color: #0A163A; -fx-text-fill: white;" text="🔍" onAction="#buscarGlobal" />
+                <TextField fx:id="buscarField" onAction="#buscarGlobal" prefWidth="250.0"
+                           promptText="Buscar" style="-fx-background-color: #ffffff; -fx-background-radius: 5;"/>
+                <Button text="🔍" onAction="#buscarGlobal" style="-fx-background-color: #0A163A; -fx-text-fill: white;"/>
             </children>
         </HBox>
     </top>
-    <right>
-        <VBox prefHeight="427.0" prefWidth="40.0" BorderPane.alignment="CENTER" />
-    </right>
-    <bottom>
-        <VBox prefHeight="44.0" prefWidth="600.0" BorderPane.alignment="CENTER" />
-    </bottom>
+
+    <right><VBox prefWidth="40.0"/></right>
+    <bottom><VBox prefHeight="44.0"/></bottom>
 </BorderPane>

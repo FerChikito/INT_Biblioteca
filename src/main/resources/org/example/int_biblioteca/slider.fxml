@@ -3,27 +3,23 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<!-- El root HBox puede crecer; el pane central se expande -->
 <HBox fx:id="sliderContainer"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.example.int_biblioteca.SliderController"
       alignment="CENTER"
-      spacing="10"
-      style="-fx-padding: 16;"
+      spacing="8"
+      style="-fx-padding: 10;"
       maxWidth="Infinity" maxHeight="Infinity">
 
-    <!-- Botón izquierdo un poco más grande -->
-    <Button fx:id="btnIzq" prefHeight="40" prefWidth="40" text="&lt;" onAction="#prev"/>
+    <Button fx:id="btnIzq" prefHeight="32" prefWidth="32" text="&lt;" onAction="#prev"/>
 
-    <!-- Área del slide: MÁS ALTA y que se estire -->
     <StackPane fx:id="slidePane"
-               minHeight="240"
+               minHeight="140"
                maxWidth="Infinity" maxHeight="Infinity"
                HBox.hgrow="ALWAYS"
-               style="-fx-background-color: white; -fx-padding: 20; -fx-border-radius: 10; -fx-border-color: #ccc;">
+               style="-fx-background-color: white; -fx-padding: 12; -fx-border-radius: 8; -fx-border-color: #ccc;">
     </StackPane>
 
-    <!-- Botón derecho -->
-    <Button fx:id="btnDerch" prefHeight="40" prefWidth="40" text="&gt;" onAction="#next"/>
+    <Button fx:id="btnDerch" prefHeight="32" prefWidth="32" text="&gt;" onAction="#next"/>
 
 </HBox>

@@ -1,13 +1,18 @@
 package org.example.int_biblioteca;
 
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
 import org.example.int_biblioteca.dao.PrestamoDAO;
+import org.example.int_biblioteca.dao.ConfigDAO;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -23,10 +28,14 @@ public class MisPrestamosController {
     @FXML private TableColumn<PrestamoListado, String> colEstado;
     @FXML private TableColumn<PrestamoListado, String> colFolio;
     @FXML private TableColumn<PrestamoListado, String> colLimite;
+    @FXML private TableColumn<PrestamoListado, String> colMulta; // <- calcula con tarifa de BD
 
     // UI
     @FXML private Label  etiquetaResultados;
     @FXML private Button btnMarcarDevuelto;
+
+    // Buscador
+    @FXML private TextField buscarPrestamosField;
 
     // Estado
     private Usuario usuarioActual;
@@ -38,22 +47,21 @@ public class MisPrestamosController {
     private final DateTimeFormatter FMT   = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
     private final DateTimeFormatter FMT_D = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
+    private final ObservableList<PrestamoListado> base = FXCollections.observableArrayList();
+    private FilteredList<PrestamoListado> filtrado;
+
     @FXML
     private void initialize() {
         colId.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(c.getValue().getIdPrestamo()));
         colTitulo.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getTitulo()));
         colIsbn.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getIsbn()));
-        colEstado.setCellValueFactory(c -> new SimpleStringProperty(
-                "D".equals(c.getValue().getEstado()) ? "Devuelto" :
-                        esVencido(c.getValue()) ? "Vencido" : "Activo"
-        ));
+        colEstado.setCellValueFactory(c -> new SimpleStringProperty(formatearEstado(c.getValue().getEstado())));
         colFolio.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getFolio()));
         colLimite.setCellValueFactory(c ->
                 new SimpleStringProperty(
                         c.getValue().getFechaLimite() == null ? "-" : FMT_D.format(c.getValue().getFechaLimite())
                 )
         );
-
         colFechaPrestamo.setCellValueFactory(c ->
                 new SimpleStringProperty(
                         c.getValue().getFechaPrestamo() == null ? "" : FMT.format(c.getValue().getFechaPrestamo())
@@ -65,37 +73,77 @@ public class MisPrestamosController {
                 )
         );
 
-        // (Opcional) marcar filas vencidas en un rosita suave
+        // Multa: tarifa dinámica desde BD (ConfigDAO.getTarifaMulta) * días de atraso
+        colMulta.setCellValueFactory(c -> {
+            PrestamoListado p = c.getValue();
+            String est = p.getEstado();
+            LocalDate limite = p.getFechaLimite();
+            if (limite == null) return new SimpleStringProperty("-");
+            boolean aplica = ("A".equals(est) || "M".equals(est)) && LocalDate.now().isAfter(limite);
+            if (!aplica) return new SimpleStringProperty("$0");
+
+            long dias = java.time.temporal.ChronoUnit.DAYS.between(limite, LocalDate.now());
+            if (dias < 0) dias = 0;
+
+            double tarifaDia = leerTarifaDesdeBD(); // <- aquí tomamos la tarifa actual
+            long total = Math.round(tarifaDia * dias); // entero simple; si quieres decimales, formatea diferente
+            return new SimpleStringProperty("$" + total);
+        });
+
+        // (Opcional) resaltar filas vencidas
         tablaPrestamos.setRowFactory(tv -> new TableRow<>() {
             @Override protected void updateItem(PrestamoListado item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setStyle("");
-                } else if (esVencido(item) && !"D".equals(item.getEstado())) {
-                    setStyle("-fx-background-color: #ffecec;");
                 } else {
-                    setStyle("");
+                    boolean vencido = item.getFechaLimite() != null
+                            && LocalDate.now().isAfter(item.getFechaLimite())
+                            && !"D".equals(item.getEstado());
+                    setStyle(vencido ? "-fx-background-color: #ffecec;" : "");
                 }
             }
         });
 
-        btnMarcarDevuelto.setVisible(false);
-        btnMarcarDevuelto.setManaged(false);
+        // Botón según permisos (usuario NO ve acciones de gestión)
+        boolean puedeDevolver = (rolActual == Rol.BIBLIOTECARIO || rolActual == Rol.ADMIN || rolActual == Rol.SUPER_ADMIN);
+        btnMarcarDevuelto.setVisible(puedeDevolver);
+        btnMarcarDevuelto.managedProperty().bind(btnMarcarDevuelto.visibleProperty());
+
+        // Filtro
+        filtrado = new FilteredList<>(base, p -> true);
+        if (buscarPrestamosField != null) {
+            buscarPrestamosField.textProperty().addListener((o, a, q) -> {
+                String s = (q == null) ? "" : q.trim().toLowerCase();
+                filtrado.setPredicate(p ->
+                        s.isEmpty()
+                                || (p.getTitulo() != null && p.getTitulo().toLowerCase().contains(s))
+                                || (p.getIsbn() != null && p.getIsbn().toLowerCase().contains(s))
+                                || (p.getFolio() != null && p.getFolio().toLowerCase().contains(s))
+                                || (p.getCorreoUsuario() != null && p.getCorreoUsuario().toLowerCase().contains(s))
+                                || (formatearEstado(p.getEstado()).toLowerCase().contains(s)));
+            });
+        }
+        SortedList<PrestamoListado> ordenado = new SortedList<>(filtrado);
+        ordenado.comparatorProperty().bind(tablaPrestamos.comparatorProperty());
+        tablaPrestamos.setItems(ordenado);
     }
 
-    private boolean esVencido(PrestamoListado p) {
-        if (p == null || p.getFechaPrestamo() == null) return false;
-        if (!"A".equals(p.getEstado())) return false;
-        return p.getFechaPrestamo().plusDays(PrestamoDAO.DIAS_LIMITE)
-                .isBefore(java.time.LocalDateTime.now());
+    // Lee la tarifa actual desde BD; si falla, usa 15 como respaldo
+    private double leerTarifaDesdeBD() {
+        try {
+            return ConfigDAO.getTarifaMulta();
+        } catch (Exception e) {
+            return 15.0; // fallback
+        }
     }
-
 
     private String formatearEstado(String e) {
         if (e == null) return "";
         return switch (e) {
             case "A" -> "Activo";
             case "D" -> "Devuelto";
+            case "M" -> "Multado";
             default  -> e;
         };
     }
@@ -104,23 +152,24 @@ public class MisPrestamosController {
     public void cargarDatos() {
         boolean puedeDevolver = (rolActual == Rol.BIBLIOTECARIO || rolActual == Rol.ADMIN || rolActual == Rol.SUPER_ADMIN);
         btnMarcarDevuelto.setVisible(puedeDevolver);
-        btnMarcarDevuelto.setManaged(puedeDevolver);
 
         try {
             List<PrestamoListado> datos;
             if (rolActual == Rol.USUARIO && usuarioActual != null) {
                 datos = PrestamoDAO.listarPorUsuario(usuarioActual.getCorreo());
             } else {
-                // Gestión para bibliotecario/admin/super: ver activos
                 datos = PrestamoDAO.listarActivos();
             }
-            tablaPrestamos.setItems(FXCollections.observableArrayList(datos));
+            base.setAll(datos);
             etiquetaResultados.setText("Resultados (" + datos.size() + ")");
         } catch (SQLException e) {
             mostrar("Base de datos", "No se pudo cargar la lista:\n" + e.getMessage(), Alert.AlertType.ERROR);
-            tablaPrestamos.getItems().clear();
+            base.clear();
             etiquetaResultados.setText("Resultados (0)");
         }
+
+        // Forzar refresco de celdas por si cambió la tarifa mientras la vista estaba abierta
+        tablaPrestamos.refresh();
     }
 
     @FXML

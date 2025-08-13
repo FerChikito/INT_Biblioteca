@@ -13,9 +13,9 @@ import java.util.function.Consumer;
 public class PerfilController {
 
     @FXML private Label etiquetaNombreRol;
-    @FXML private TextField campoNombre, campoCorreo, campoDireccion, campoTelefono;
+    @FXML private TextField campoNombre, campoCorreo, campoDireccion, campoTelefono, campoNacimiento;
 
-    // Cambio de contraseña (solo nueva en Perfil)
+    // Cambio de contraseña (mostrar/ocultar)
     @FXML private PasswordField newPasswordField;
     @FXML private TextField     newPasswordVisibleField;
     @FXML private Button        toggleNewPasswordButton;
@@ -26,11 +26,14 @@ public class PerfilController {
 
     public void setUsuarioActual(Usuario u) {
         this.usuarioActual = u;
-        if (u != null && etiquetaNombreRol != null) {
-            etiquetaNombreRol.setText(u.getNombre() + " (" + u.getRol() + ")");
+        if (u != null) {
+            if (etiquetaNombreRol != null) etiquetaNombreRol.setText(u.getNombre() + " (" + u.getRol() + ")");
+            if (campoNombre != null)    campoNombre.setText(u.getNombre());
+            if (campoCorreo != null)    campoCorreo.setText(u.getCorreo()); // CORREGIDO
+            if (campoDireccion != null) campoDireccion.setText(u.getDireccion() == null ? "" : u.getDireccion());
+            if (campoTelefono != null)  campoTelefono.setText(u.getNumeroTelefonico() == null ? "" : u.getNumeroTelefonico());
+            // campoNacimiento: placeholder (Usuario no tiene fechaNacimiento en el modelo aún)
         }
-        if (campoNombre != null && u != null)  campoNombre.setText(u.getNombre());
-        if (campoCorreo != null && u != null)  campoCorreo.setText(u.getNombre()); // si usas correo como nombre de login
     }
 
     public void setOnRegresar(Runnable r) { this.onRegresar = r; }
@@ -70,10 +73,17 @@ public class PerfilController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("contrasenia.fxml"));
             Parent vista = loader.load();
 
+            // Si tu controlador se llama ContraseniaController y expone setUsuarioActual, se lo pasamos:
+            try {
+                Object ctrl = loader.getController();
+                // Evita ClassNotFound si el nombre/clase cambia:
+                ctrl.getClass().getMethod("setUsuarioActual", Usuario.class).invoke(ctrl, usuarioActual);
+            } catch (Throwable ignore) {}
+
             if (onMostrarVista != null) {
-                onMostrarVista.accept(vista);  // 👉 muestra en el centro del BorderPane del menú
+                onMostrarVista.accept(vista);  // mostrar dentro del centro del menú
             } else {
-                // Fallback: abrir como ventana modal si no nos pasaron el callback
+                // Fallback: abrir modal
                 Stage stage = new Stage();
                 stage.setTitle("Cambio de contraseña");
                 stage.setScene(new Scene(vista));
@@ -87,5 +97,4 @@ public class PerfilController {
             ex.printStackTrace();
         }
     }
-
 }

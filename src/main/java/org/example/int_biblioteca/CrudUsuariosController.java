@@ -1,6 +1,7 @@
 package org.example.int_biblioteca;
 
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.beans.property.SimpleObjectProperty;
@@ -10,6 +11,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.example.int_biblioteca.dao.UsuarioDAO;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 
 public class CrudUsuariosController {
 
@@ -18,6 +21,9 @@ public class CrudUsuariosController {
     @FXML private TableColumn<Usuario, String> columnaNombre;
     @FXML private TableColumn<Usuario, String> columnaCorreo;
     @FXML private TableColumn<Usuario, Rol>    columnaRol;
+
+    // Buscador
+    @FXML private TextField buscarUsuariosField;
 
     // Formulario
     @FXML private TextField     campoNombre;
@@ -31,12 +37,31 @@ public class CrudUsuariosController {
     private Rol rolActual = Rol.USUARIO;
     private String correoOriginalSeleccionado;
 
+    private final ObservableList<Usuario> base = FXCollections.observableArrayList();
+    private FilteredList<Usuario> filtrado;
+
     @FXML
     private void initialize() {
         columnaNombre.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNombre()));
         columnaCorreo.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getCorreo()));
         columnaRol.setCellValueFactory(c -> new SimpleObjectProperty<>(c.getValue().getRol()));
         comboRol.setItems(FXCollections.observableArrayList()); // se llena en setRolActual
+
+        filtrado = new FilteredList<>(base, u -> true);
+        if (buscarUsuariosField != null) {
+            buscarUsuariosField.textProperty().addListener((o,a,q)->{
+                String s = q == null ? "" : q.trim().toLowerCase();
+                filtrado.setPredicate(u ->
+                        s.isEmpty()
+                                || u.getNombre().toLowerCase().contains(s)
+                                || u.getCorreo().toLowerCase().contains(s)
+                                || u.getRol().name().toLowerCase().contains(s)
+                );
+            });
+        }
+        SortedList<Usuario> ordenado = new SortedList<>(filtrado);
+        ordenado.comparatorProperty().bind(tablaUsuarios.comparatorProperty());
+        tablaUsuarios.setItems(ordenado);
     }
 
     // Lo llama el menú al abrir esta vista
@@ -49,9 +74,9 @@ public class CrudUsuariosController {
     private static List<Rol> rolesQuePuedeCrear(Rol r) {
         List<Rol> roles = new ArrayList<>();
         switch (r) {
-            case SUPER_ADMIN -> { roles.add(Rol.SUPER_ADMIN); roles.add(Rol.ADMIN); roles.add(Rol.BIBLIOTECARIO); roles.add(Rol.USUARIO); }
+            case SUPER_ADMIN -> { roles.add(Rol.SUPER_ADMIN); roles.add(Rol.ADMIN); } // SOLO estos
             case ADMIN       -> { roles.add(Rol.ADMIN); roles.add(Rol.BIBLIOTECARIO); roles.add(Rol.USUARIO); }
-            case BIBLIOTECARIO -> roles.add(Rol.USUARIO);
+            case BIBLIOTECARIO -> roles.add(Rol.USUARIO); // solo usuarios
             default -> {}
         }
         return roles;
@@ -69,12 +94,11 @@ public class CrudUsuariosController {
     private void recargarTabla() {
         try {
             List<Usuario> todos = UsuarioDAO.listar();
-            List<Usuario> filtrados = new ArrayList<>();
-            for (Usuario u : todos) if (puedeVer(rolActual, u.getRol())) filtrados.add(u);
-            tablaUsuarios.setItems(FXCollections.observableArrayList(filtrados));
+            base.clear();
+            for (Usuario u : todos) if (puedeVer(rolActual, u.getRol())) base.add(u);
         } catch (SQLException e) {
             alerta("Base de datos", "No se pudo cargar la lista de usuarios:\n" + e.getMessage(), Alert.AlertType.ERROR);
-            tablaUsuarios.getItems().clear();
+            base.clear();
         }
     }
 

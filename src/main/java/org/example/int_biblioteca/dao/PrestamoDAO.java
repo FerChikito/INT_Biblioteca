@@ -3,6 +3,7 @@ package org.example.int_biblioteca.dao;
 import org.example.int_biblioteca.Database;
 import org.example.int_biblioteca.PrestamoListado;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,22 +13,30 @@ import java.util.List;
 public final class PrestamoDAO {
     private PrestamoDAO(){}
 
-    // Reglas de negocio
-    public static final int MAX_ACTIVOS = 5;   // máx. préstamos activos por usuario
-    public static final int DIAS_LIMITE = 3;   // días para la fecha límite
+    public static final int MAX_ACTIVOS = 5;
 
-    // Constantes de estado/columnas
-    private static final String ESTADO_ACTIVO   = "A";
-    private static final String ESTADO_DEVUELTO = "D";
-    private static final String COL_USUARIO     = "CORREO_USUARIO";
+    private static final String ESTADO_A = "A";
+    private static final String ESTADO_D = "D";
+    private static final String ESTADO_M = "M";
 
-    // === contar préstamos activos del usuario
+    // ===== Parámetros =====
+    public static int diasLimiteDefault() {
+        try { return ConfigDAO.getDiasLimite(); }
+        catch (Exception e) { return 3; }
+    }
+
+    private static BigDecimal leerTarifaGlobal() {
+        try { return BigDecimal.valueOf(ConfigDAO.getTarifaMulta()); }
+        catch (Exception e) { return new BigDecimal("50"); }
+    }
+
+    // ===== Consultas de control =====
     public static int contarActivos(String correo) throws SQLException {
         String sql = """
             SELECT COUNT(*)
               FROM PRESTAMOS
              WHERE CORREO_USUARIO = ?
-               AND ESTADO = 'A'
+               AND ESTADO IN ('A','M')
                AND FECHA_DEVOL IS NULL
         """;
         try (Connection c = Database.getConnection();
@@ -39,15 +48,15 @@ public final class PrestamoDAO {
         }
     }
 
-    // === tiene préstamos vencidos (fecha_límite < hoy y no devueltos)
     public static boolean tieneVencidos(String correo) throws SQLException {
         String sql = """
             SELECT 1
               FROM PRESTAMOS
              WHERE CORREO_USUARIO = ?
-               AND ESTADO = 'A'
+               AND ESTADO IN ('A','M')
                AND FECHA_DEVOL IS NULL
                AND TRUNC(FECHA_LIMITE) < TRUNC(SYSDATE)
+             FETCH FIRST 1 ROWS ONLY
         """;
         try (Connection c = Database.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
@@ -58,7 +67,7 @@ public final class PrestamoDAO {
         }
     }
 
-    // === listar préstamos del usuario
+    // ===== Listados =====
     public static List<PrestamoListado> listarPorUsuario(String correo) throws SQLException {
         String sql = """
             SELECT p.ID_PRESTAMO, p.CORREO_USUARIO, p.ESTADO, p.FECHA_PREST, p.FECHA_DEVOL,
@@ -80,7 +89,6 @@ public final class PrestamoDAO {
         }
     }
 
-    // === listar préstamos activos (para gestión)
     public static List<PrestamoListado> listarActivos() throws SQLException {
         String sql = """
             SELECT p.ID_PRESTAMO, p.CORREO_USUARIO, p.ESTADO, p.FECHA_PREST, p.FECHA_DEVOL,
@@ -88,7 +96,7 @@ public final class PrestamoDAO {
                    l.TITULO, l.ISBN
               FROM PRESTAMOS p
               JOIN LIBROS l ON l.ID_LIBRO = p.ID_LIBRO
-             WHERE p.ESTADO = 'A'
+             WHERE p.ESTADO IN ('A','M')
                AND p.FECHA_DEVOL IS NULL
              ORDER BY p.ID_PRESTAMO DESC
         """;
@@ -101,74 +109,100 @@ public final class PrestamoDAO {
         }
     }
 
-    // === crear préstamos (con folio y fecha_límite)
-    public static int crearPrestamos(String correo, List<String> isbns) throws SQLException {
+    // ===== Operaciones =====
+    public static boolean marcarDevuelto(int idPrestamo) throws SQLException {
+        String sql = "UPDATE PRESTAMOS SET ESTADO=?, FECHA_DEVOL=SYSDATE WHERE ID_PRESTAMO=? AND FECHA_DEVOL IS NULL";
+        try (Connection c = Database.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, ESTADO_D);
+            ps.setInt(2, idPrestamo);
+            return ps.executeUpdate() == 1;
+        }
+    }
+
+    public static int crearPrestamos(String correoUsuario, List<String> isbns) throws SQLException {
         if (isbns == null || isbns.isEmpty()) return 0;
+        final int dias = diasLimiteDefault();
 
         String sql = """
-    INSERT INTO PRESTAMOS (ID_LIBRO, CORREO_USUARIO, ESTADO, FOLIO, FECHA_LIMITE)
-    SELECT l.ID_LIBRO, ?, 'A', ?, ?
-      FROM LIBROS l
-     WHERE l.ISBN = ?
-       AND NOT EXISTS (
-           SELECT 1 FROM PRESTAMOS p
-            WHERE p.ID_LIBRO = l.ID_LIBRO
-              AND p.ESTADO = 'A'
-              AND p.FECHA_DEVOL IS NULL
-       )
-""";
+            INSERT INTO PRESTAMOS (ID_LIBRO, CORREO_USUARIO, ESTADO, FOLIO, FECHA_PREST, FECHA_LIMITE, DIAS_LIMITE_USADOS)
+            SELECT l.ID_LIBRO, ?, 'A', ?, SYSDATE, TRUNC(SYSDATE) + ?, ?
+              FROM LIBROS l
+             WHERE l.ISBN = ?
+               AND NOT EXISTS (
+                   SELECT 1 FROM PRESTAMOS p
+                    WHERE p.ID_LIBRO = l.ID_LIBRO
+                      AND p.ESTADO IN ('A','M')
+                      AND p.FECHA_DEVOL IS NULL
+               )
+        """;
 
         try (Connection c = Database.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
             int total = 0;
             for (String isbn : isbns) {
-                String folio = generarFolio();
-                java.sql.Date fechaLimite = java.sql.Date.valueOf(
-                        calcularFechaLimite(java.time.LocalDate.now(), DIAS_LIMITE)
-                );
-
-                ps.setString(1, correo);
-                ps.setString(2, folio);
-                ps.setDate(3, fechaLimite);  // << aquí va la fecha “inteligente”
-                ps.setString(4, isbn);
+                ps.setString(1, correoUsuario);
+                ps.setString(2, generarFolio());
+                ps.setInt(3, dias);
+                ps.setInt(4, dias);
+                ps.setString(5, isbn);
                 total += ps.executeUpdate();
             }
             return total;
         }
-
     }
 
-    private static java.time.LocalDate calcularFechaLimite(java.time.LocalDate hoy, int dias) {
-        java.time.LocalDate f = hoy.plusDays(dias);
-        switch (f.getDayOfWeek()) {
-            case SATURDAY: return f.plusDays(2);
-            case SUNDAY:   return f.plusDays(1);
-            default:       return f;
-        }
-    }
-
-    // === marcar como devuelto
-    public static boolean marcarDevuelto(int idPrestamo) throws SQLException {
-        String sql = "UPDATE PRESTAMOS SET ESTADO=?, FECHA_DEVOL=SYSDATE WHERE ID_PRESTAMO=? AND ESTADO=?";
+    /** Cambia la fecha límite de un préstamo (Admin/Biblio). */
+    public static boolean actualizarFechaLimite(int idPrestamo, LocalDate nuevaFecha) throws SQLException {
+        String sql = "UPDATE PRESTAMOS SET FECHA_LIMITE=? WHERE ID_PRESTAMO=? AND FECHA_DEVOL IS NULL";
         try (Connection c = Database.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
-            ps.setString(1, ESTADO_DEVUELTO);
+            ps.setDate(1, nuevaFecha == null ? null : Date.valueOf(nuevaFecha));
             ps.setInt(2, idPrestamo);
-            ps.setString(3, ESTADO_ACTIVO);
             return ps.executeUpdate() == 1;
         }
     }
 
-    // === mapeo ResultSet -> PrestamoListado
-    private static PrestamoListado mapListado(ResultSet rs) throws SQLException {
-        LocalDateTime fp = null, fd = null;
-        Timestamp t1 = rs.getTimestamp("FECHA_PREST");
-        Timestamp t2 = rs.getTimestamp("FECHA_DEVOL");
-        if (t1 != null) fp = t1.toLocalDateTime();
-        if (t2 != null) fd = t2.toLocalDateTime();
+    /** Si ya venció, pone estado 'M' y guarda TARIFA_MULTA_DIA/MULTA_TOTAL. */
+    public static boolean aplicarMultaSiCorresponde(int idPrestamo) throws SQLException {
+        String sel = """
+          SELECT FECHA_LIMITE
+            FROM PRESTAMOS
+           WHERE ID_PRESTAMO=? AND ESTADO IN ('A','M') AND FECHA_DEVOL IS NULL
+        """;
+        try (Connection c = Database.getConnection();
+             PreparedStatement ps = c.prepareStatement(sel)) {
+            ps.setInt(1, idPrestamo);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) return false;
+                LocalDate limite = rs.getDate(1).toLocalDate();
+                long diasAtraso = java.time.temporal.ChronoUnit.DAYS.between(limite, LocalDate.now());
+                if (diasAtraso <= 0) return false;
 
-        java.sql.Date dl = rs.getDate("FECHA_LIMITE");
-        LocalDate limite = (dl == null) ? null : dl.toLocalDate();
+                // Por ahora usamos la global. Si más adelante guardas CORREO_BIBLIO en PRESTAMOS,
+                // puedes leer tarifa por bibliotecario con MultaTarifaDAO.
+                BigDecimal tarifa = leerTarifaGlobal();
+                BigDecimal total  = tarifa.multiply(new BigDecimal(diasAtraso));
+
+                try (PreparedStatement up = c.prepareStatement("""
+                   UPDATE PRESTAMOS
+                      SET ESTADO='M', TARIFA_MULTA_DIA=?, MULTA_TOTAL=?
+                    WHERE ID_PRESTAMO=?
+                """)) {
+                    up.setBigDecimal(1, tarifa);
+                    up.setBigDecimal(2, total);
+                    up.setInt(3, idPrestamo);
+                    return up.executeUpdate() == 1;
+                }
+            }
+        }
+    }
+
+    // ===== Mapeo =====
+    private static PrestamoListado mapListado(ResultSet rs) throws SQLException {
+        LocalDateTime fp = rs.getTimestamp("FECHA_PREST") == null ? null : rs.getTimestamp("FECHA_PREST").toLocalDateTime();
+        LocalDateTime fd = rs.getTimestamp("FECHA_DEVOL") == null ? null : rs.getTimestamp("FECHA_DEVOL").toLocalDateTime();
+        LocalDate limite = rs.getDate("FECHA_LIMITE") == null ? null : rs.getDate("FECHA_LIMITE").toLocalDate();
 
         return new PrestamoListado(
                 rs.getInt("ID_PRESTAMO"),
@@ -183,10 +217,9 @@ public final class PrestamoDAO {
         );
     }
 
-    // === generador simple de folio
     private static String generarFolio() {
         String base = new java.text.SimpleDateFormat("yyyyMMddHHmmss").format(new java.util.Date());
-        int rnd = (int)(Math.random() * 9000) + 1000;
+        int rnd = (int)(Math.random()*9000)+1000;
         return base + "-" + rnd;
     }
 }

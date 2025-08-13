@@ -7,79 +7,108 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.event.ActionEvent;
 import javafx.scene.layout.*;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.example.int_biblioteca.dao.LibroDAO;
+
+import org.example.int_biblioteca.dao.ConfigDAO; // <-- IMPORTANTE
+// Si usas CmsDAO para persistir info/slider, impórtalo también
+// import org.example.int_biblioteca.dao.CmsDAO;
 
 public class MenuPrincipal {
-    // Declaración de los componentes de la interfaz
-    @FXML
-    private Button botonMenu; // Botón para abrir el menú
-    @FXML
-    private Button botonPerfil; // Botón para acceder al perfil
-    @FXML
-    private Button botonCatalogoL; // Botón para acceder al catálogo de libros
-    @FXML
-    private TextField buscarField; // Campo de texto para buscar
-    @FXML
-    private HBox sliderContainer; // Contenedor para el slider
-    @FXML
-    private VBox infoP;
-    @FXML
-    private Button botonEditar;
-    @FXML
-    private Button editarInfoBtn;
-    @FXML
-    private Button editarSliderBtn;
-    @FXML
-    private Button editarLibrosBtn;
-    @FXML
-    private BorderPane rootPane; // tu BorderPane raíz
-    private Node originalCenter;                  // guarda aquí el centro original
-    @FXML
-    private StackPane centerStack;
-    @FXML
-    private AnchorPane sliderView;
-    @FXML
-    private VBox infoView;
-    @FXML
-    private Button botonUsuarios;      // NUEVO: abre CRUD Usuarios
 
-    // Usuario que inició sesión
+    // Lado izquierdo
+    @FXML private Button botonMenu;
+    @FXML private Button botonPerfil;
+    @FXML private Button botonCatalogoL;
+    @FXML private Button botonUsuarios;
+    @FXML private Button editarLibrosBtn;
+    @FXML private Button editarInfoBtn;
+    @FXML private Button editarSliderBtn;
+    @FXML private Button btnConfigMulta;  // Botón "Tarifa multa ⚖️" en el FXML
+    @FXML private Button btnConfigDias;   // Botón "Días límite 📅" en el FXML
+    @FXML private Button btnLogout;
+
+    // Top
+    @FXML private TextField buscarField;
+    @FXML private HBox barraBusquedaSuperior;
+
+    // Centro
+    @FXML private BorderPane rootPane;
+    @FXML private HBox sliderContainer;
+    @FXML private VBox infoP;
+
     private Usuario usuarioActual;
-    private static final String CMS_INFO   = "INFO_PRINCIPAL";
-    private static final String CMS_SLIDES = "SLIDER_TEXT";
+    private Parent catalogoRoot;
+    private CatalogoLibrosController catalogoController;
+    private Node originalCenter;
+
+    private SliderController sliderController;
 
     @FXML
-    private void buscarGlobal() {
-        String q = buscarField.getText() == null ? "" : buscarField.getText().trim();
-        abrirCatalogo(q);
+    public void initialize() {
+        cargarSlider();
+        // Texto por defecto para que NO se vea en blanco
+        renderInfo("""
+                INFORMACIÓN PRINCIPAL
+                Bienvenido a la Biblioteca Digital.
+                
+                • Horario: Lunes a Viernes (9:00 - 18:00)
+                • Préstamos: Máximo 5 libros por usuario
+                • Contacto: biblioteca@ejemplo.com
+                """);
+
+        originalCenter = rootPane.getCenter();
+        aplicarPermisosPorRol();
+
+        // Que no dejen hueco al ocultarlos
+        mirrorManagedToVisible(botonUsuarios, editarInfoBtn, editarSliderBtn, editarLibrosBtn,
+                btnConfigMulta, btnConfigDias, btnLogout);
+
+        mostrarBotonesDeEdicion();
     }
 
-    // Datos simulados de libros
-    private List<Libro> libros = new ArrayList<>(List.of(
-            new Libro("Cien años de soledad", "Gabriel García Márquez", "978-3-16-148410-0"),
-            new Libro("1984", "George Orwell", "978-0-452-28423-4"),
-            new Libro("El principito", "Antoine de Saint-Exupéry", "978-84-206-5352-9"),
-            new Libro("Harry Potter y la piedra filosofal", "J.K. Rowling", "978-0-7475-3269-9"),
-            new Libro("Fahrenheit 451", "Ray Bradbury", "978-0-7432-4722-1")
-    ));
+    public void setUsuario(Usuario usuario) {
+        this.usuarioActual = usuario;
+        aplicarPermisosPorRol();
+        mostrarBotonesDeEdicion();
+    }
 
-    // Método que se ejecuta al hacer clic en el botón de menú
+    private void aplicarPermisosPorRol() {
+        Rol r = (usuarioActual != null) ? usuarioActual.getRol() : Rol.USUARIO;
+
+        setVis(botonUsuarios, false);
+        setVis(editarLibrosBtn, false);
+        setVis(editarInfoBtn, false);
+        setVis(editarSliderBtn, false);
+        setVis(btnConfigMulta, false);
+        setVis(btnConfigDias, false);
+
+        switch (r) {
+            case SUPER_ADMIN -> setVis(botonUsuarios, true);
+            case ADMIN, BIBLIOTECARIO -> {
+                setVis(botonUsuarios, true);
+                setVis(editarLibrosBtn, true);
+                setVis(editarInfoBtn, true);
+                setVis(editarSliderBtn, true);
+                setVis(btnConfigMulta, true);
+                setVis(btnConfigDias, true);
+            }
+            case USUARIO -> {}
+        }
+        setVis(btnLogout, usuarioActual != null);
+    }
+
+    private void mostrarBotonesDeEdicion() { aplicarPermisosPorRol(); }
+
     @FXML
-    private void handleBotonMenu(javafx.event.ActionEvent event) {
-        // Evita NPE y no dupliques el centro si ya está puesto
+    private void handleBotonMenu(ActionEvent event) {
         if (originalCenter != null && rootPane.getCenter() != originalCenter) {
             rootPane.setCenter(originalCenter);
         }
-        restaurarBarraSuperior(); // <- importante
+        restaurarBarraSuperior();
     }
 
-    // Método que se ejecuta al hacer clic en el botón de perfil
     @FXML
     private void handleBotonPerfil(ActionEvent event) {
         try {
@@ -92,255 +121,29 @@ public class MenuPrincipal {
                 if (originalCenter != null && rootPane.getCenter() != originalCenter) {
                     rootPane.setCenter(originalCenter);
                 }
-                restaurarBarraSuperior(); // <- importante
+                restaurarBarraSuperior();
             });
             rootPane.setCenter(vista);
-            restaurarBarraSuperior(); // <- importante
+            restaurarBarraSuperior();
         } catch (Exception e) {
             showAlert(Alert.AlertType.ERROR, "Perfil", "No se pudo abrir la vista de perfil:\n" + e.getMessage());
         }
     }
 
-    // Método que se ejecuta al hacer clic en el botón de catálogo
-    @FXML
-    private void handleBotonCatalogoL(ActionEvent event) {
-        abrirCatalogo(null);
-    }
+    @FXML private void handleBotonCatalogoL(ActionEvent e) { abrirCatalogo(null); }
 
-    // Método para inicializar el slider
-    @FXML
-    public void initialize() {
-        cargarSlider();
-        cargarInfoDesdeBD();// Llama a cargarTexto aquí// Luego guarda el contenido original del centro
-        originalCenter = rootPane.getCenter();
-        aplicarPermisosPorRol(); // por si ya hay usuario seteado antes
-        // Que no ocupen espacio cuando estén ocultos:
-        if (botonUsuarios   != null) botonUsuarios.managedProperty().bind(botonUsuarios.visibleProperty());
-        if (editarInfoBtn   != null) editarInfoBtn.managedProperty().bind(editarInfoBtn.visibleProperty());
-        if (editarSliderBtn != null) editarSliderBtn.managedProperty().bind(editarSliderBtn.visibleProperty());
-        if (editarLibrosBtn != null) editarLibrosBtn.managedProperty().bind(editarLibrosBtn.visibleProperty());
-
-        mostrarBotonesDeEdicion();
-    }
-
-    // Guardamos una referencia al controller del slider cargado desde slider.fxml.
-// Con esto podremos modificar su contenido (diapositivas) SIN reemplazar el nodo en pantalla.
-    private SliderController sliderController;
-    // ===== Cargar el slider al iniciar el menú =====
-    private void cargarSlider() {
-        try {
-            // 1) Preparamos un FXMLLoader apuntando al FXML del slider.
-            //    La ruta es relativa al paquete de esta clase: org/example/int_biblioteca/slider.fxml
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("slider.fxml"));
-
-            // 2) Cargamos el FXML. Esto instancia el árbol de nodos (HBox raíz del slider)
-            //    y también crea el controller declarado en el FXML (SliderController).
-            HBox slider = loader.load();
-
-            // 3) Obtenemos el controller real del slider. ¡Clave!
-            //    Con esta referencia podremos llamar a sus métodos públicos (setSlidesText, next, prev, etc.).
-            sliderController = loader.getController();
-
-            slider.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-            javafx.scene.layout.HBox.setHgrow(slider, javafx.scene.layout.Priority.ALWAYS);
-
-            // 4) Colocamos el nodo raíz del slider dentro de nuestro contenedor en el menú.
-            //    Usamos setAll para reemplazar cualquier contenido previo.
-            sliderContainer.getChildren().setAll(slider);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void cargarInfoDesdeBD() {
-        try {
-            // 1) INFO_PRINCIPAL
-            String info = org.example.int_biblioteca.dao.CmsDAO.get(CMS_INFO);
-            if (info == null || info.isBlank()) {
-                // fallback si no hay nada en BD
-                info = "INFORMACIÓN PRINCIPAL\n\nBienvenido a la Biblioteca Digital.\n" +
-                        "• Horario: Lunes a Viernes (9:00 - 18:00)\n" +
-                        "• Préstamos: Máximo 5 libros por usuario\n" +
-                        "• Contacto: biblioteca@ejemplo.com";
-            }
-            renderInfo(info);
-
-            // 2) SLIDER_TEXT
-            String slides = org.example.int_biblioteca.dao.CmsDAO.get(CMS_SLIDES);
-            if (slides != null && sliderController != null) {
-                // dividir por líneas --- (una línea con solo ---)
-                String[] partes = slides.split("(?m)^\\s*---\\s*$");
-                java.util.List<String> lista = new java.util.ArrayList<>();
-                for (String p : partes) {
-                    String s = p.strip();
-                    if (!s.isEmpty()) lista.add(s);
-                }
-                if (!lista.isEmpty()) {
-                    sliderController.setSlidesText(lista);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            // si falla BD, al menos muestra un fallback
-            renderInfo("No se pudo cargar la información desde la base de datos.\n" +
-                    "Intenta más tarde o contacta al administrador.");
-        }
-    }
-
-    /** Pinta el texto de infoP con pequeños párrafos (líneas vacías separan bloques). */
-    private void renderInfo(String texto) {
-        infoP.getChildren().clear();
-        if (texto == null || texto.isBlank()) {
-            infoP.getChildren().add(new Label("(sin información)"));
-            return;
-        }
-        String[] lineas = texto.split("\\R"); // separa por saltos de línea
-        for (String ln : lineas) {
-            if (ln.isBlank()) {
-                // separador visual
-                Region sep = new Region();
-                sep.setMinHeight(6);
-                infoP.getChildren().add(sep);
-            } else {
-                Label lbl = new Label(ln);
-                lbl.setWrapText(true);
-                lbl.setStyle("-fx-text-fill: #1B2D4F; -fx-font-size: 14px;");
-                lbl.setMaxWidth(Double.MAX_VALUE);
-                infoP.getChildren().add(lbl);
-            }
-        }
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuarioActual = usuario;
-        mostrarBotonesDeEdicion();
-    }
-
-
-    // Muestra botón de edición solo si es admin
-    private void mostrarBotonesDeEdicion() {
-        Rol r = (usuarioActual != null) ? usuarioActual.getRol() : Rol.USUARIO;
-
-        boolean verUsuarios     = (r == Rol.SUPER_ADMIN || r == Rol.ADMIN || r == Rol.BIBLIOTECARIO);
-        boolean verEditarLibros = (r == Rol.SUPER_ADMIN || r == Rol.ADMIN);
-        boolean verEditarSlider = (r == Rol.SUPER_ADMIN || r == Rol.ADMIN);
-        boolean verEditarInfo   = (r == Rol.SUPER_ADMIN || r == Rol.ADMIN);
-
-        if (editarLibrosBtn != null)  editarLibrosBtn.setVisible(verEditarLibros);
-        if (editarSliderBtn != null)  editarSliderBtn.setVisible(verEditarSlider);
-        if (editarInfoBtn != null)    editarInfoBtn.setVisible(verEditarInfo);
-        if (botonEditar != null)      botonEditar.setVisible(verEditarInfo);
-        if (botonUsuarios != null)    botonUsuarios.setVisible(verUsuarios);
-    }
-
-    // Acciones para botones de edición (solo admin)
-    @FXML
-    private void handleEditarInfo(ActionEvent event) {
-        if (usuarioActual == null || (usuarioActual.getRol() != Rol.ADMIN && usuarioActual.getRol() != Rol.SUPER_ADMIN)) return;
-
-        // 1) Carga el texto actual desde BD
-        String actual = "";
-        try { actual = org.example.int_biblioteca.dao.CmsDAO.get(CMS_INFO); } catch (Exception ignored) {}
-
-        // 2) Diálogo de edición
-        Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.setTitle("Editar información principal");
-        dialog.setHeaderText("Modifica el texto que aparece debajo del slider.");
-        TextArea area = new TextArea(actual == null ? "" : actual);
-        area.setPrefColumnCount(60);
-        area.setPrefRowCount(14);
-        dialog.getDialogPane().setContent(area);
-        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
-        dialog.showAndWait().ifPresent(bt -> {
-            if (bt != ButtonType.OK) return;
-            String nuevo = area.getText();
-            try {
-                org.example.int_biblioteca.dao.CmsDAO.set(CMS_INFO, nuevo);
-                renderInfo(nuevo); // refresca UI
-                showAlert(Alert.AlertType.INFORMATION, "Info", "Información guardada.");
-            } catch (Exception e) {
-                e.printStackTrace();
-                showAlert(Alert.AlertType.ERROR, "Info", "No se pudo guardar:\n" + e.getMessage());
-            }
-        });
-    }
-
-
-    // ===== Editar el contenido del slider desde el menú =====
-    @FXML
-    private void handleEditarSlider(ActionEvent event) {
-        if (usuarioActual == null || (usuarioActual.getRol() != Rol.ADMIN && usuarioActual.getRol() != Rol.SUPER_ADMIN)) return;
-        if (sliderController == null) return;
-
-        // 1) Texto actual: intenta desde BD, si no, desde lo que hay en pantalla
-        String actual = null;
-        try { actual = org.example.int_biblioteca.dao.CmsDAO.get(CMS_SLIDES); } catch (Exception ignored) {}
-        if (actual == null || actual.isBlank()) {
-            actual = String.join("\n---\n", sliderController.getSlidesText());
-        }
-
-        // 2) Diálogo
-        Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.setTitle("Editar slider");
-        dialog.setHeaderText("Cada diapositiva sepárala con una línea que contenga solo ---");
-        TextArea area = new TextArea(actual);
-        area.setPrefColumnCount(60);
-        area.setPrefRowCount(14);
-        dialog.getDialogPane().setContent(area);
-        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
-        dialog.showAndWait().ifPresent(bt -> {
-            if (bt != ButtonType.OK) return;
-
-            String texto = area.getText();
-            // Split por línea con solo --- (con o sin espacios alrededor)
-            String[] partes = texto.split("(?m)^\\s*---\\s*$");
-
-            java.util.List<String> nuevas = new java.util.ArrayList<>();
-            for (String p : partes) {
-                String s = p.strip();
-                if (!s.isEmpty()) nuevas.add(s);
-            }
-            if (nuevas.isEmpty()) return;
-
-            try {
-                // Guarda en BD como un solo CLOB
-                String aGuardar = String.join("\n---\n", nuevas);
-                org.example.int_biblioteca.dao.CmsDAO.set(CMS_SLIDES, aGuardar);
-
-                // Actualiza el slider en vivo
-                sliderController.setSlidesText(nuevas);
-                showAlert(Alert.AlertType.INFORMATION, "Slider", "Diapositivas guardadas.");
-            } catch (Exception e) {
-                e.printStackTrace();
-                showAlert(Alert.AlertType.ERROR, "Slider", "No se pudo guardar:\n" + e.getMessage());
-            }
-        });
-    }
-
-
-    @FXML
-    private void handleEditarLibros(ActionEvent event) {
-        if (usuarioActual == null || usuarioActual.getRol() != Rol.ADMIN) return;
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("crud-libros.fxml"));
-            Parent crudView = loader.load();
-            rootPane.setCenter(crudView);
-        } catch (IOException e) {
-            e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Error", "No se pudo cargar la vista de edición de libros.");
-        }
+    @FXML private void buscarGlobal() {
+        String q = (buscarField.getText() == null) ? "" : buscarField.getText().trim();
+        abrirCatalogo(q);
     }
 
     @FXML
-    private void abrirUsuarios(javafx.event.ActionEvent event) {
+    private void abrirUsuarios(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("crud-usuarios.fxml"));
             Parent vista = loader.load();
             CrudUsuariosController ctrl = loader.getController();
-            ctrl.setRolActual(usuarioActual != null ? usuarioActual.getRol() : Rol.USUARIO); // <- aquí se recarga UNA vez
+            ctrl.setRolActual(usuarioActual != null ? usuarioActual.getRol() : Rol.USUARIO);
             rootPane.setCenter(vista);
         } catch (Exception e) {
             showAlert(Alert.AlertType.ERROR, "Usuarios", "No se pudo cargar Usuarios:\n" + e.getMessage());
@@ -348,88 +151,8 @@ public class MenuPrincipal {
         }
     }
 
-    private void setVis(Button b, boolean visible) {
-        if (b == null) return;
-        b.setVisible(visible);
-        b.setManaged(visible); // que no deje hueco
-    }
-
-    private void aplicarPermisosPorRol() {
-        if (usuarioActual == null) {
-            setVis(botonUsuarios, false);
-            setVis(editarInfoBtn, false);
-            setVis(editarSliderBtn, false);
-            setVis(editarLibrosBtn, false);
-            return;
-        }
-        Rol r = usuarioActual.getRol();
-
-        boolean verUsuarios     = (r == Rol.SUPER_ADMIN) || (r == Rol.ADMIN) || (r == Rol.BIBLIOTECARIO);
-        boolean verEditarLibros = (r == Rol.ADMIN);
-        boolean verEditarInfo   = (r == Rol.ADMIN);
-        boolean verEditarSlider = (r == Rol.ADMIN);
-
-        // Si quieres que SUPER_ADMIN vea SOLO "Usuarios" (además de lo default)
-        if (r == Rol.SUPER_ADMIN) {
-            verEditarLibros = false;
-            verEditarInfo   = false;
-            verEditarSlider = false;
-        }
-        setVis(botonUsuarios, verUsuarios);
-        setVis(editarLibrosBtn, verEditarLibros);
-        setVis(editarInfoBtn,   verEditarInfo);
-        setVis(editarSliderBtn, verEditarSlider);
-    }
-
-    // Utilidad para mostrar alertas
-    private void showAlert(Alert.AlertType type, String title, String content) {
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
-    }
-
-    @FXML private HBox barraBusquedaSuperior;
-
-    private Parent catalogoRoot;
-    private CatalogoLibrosController catalogoController;
-
-    private void ocultarBarraSuperior(boolean ocultar) {
-        if (barraBusquedaSuperior != null) {
-            barraBusquedaSuperior.setVisible(!ocultar);
-            barraBusquedaSuperior.setManaged(!ocultar); // que no deje hueco
-        }
-    }
-
-    private void restaurarBarraSuperior() { ocultarBarraSuperior(false); }
-
-    private void abrirCatalogo(String query) {
-        try {
-            if (catalogoRoot == null) {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("catalogo-libros.fxml"));
-                catalogoRoot = loader.load();
-                catalogoController = loader.getController();
-            }
-
-            // se  asegúra de pasar SIEMPRE el usuario antes de mostrar
-            if (catalogoController != null) {
-                catalogoController.setUsuarioActual(usuarioActual);
-                if (query != null && !query.isBlank()) {
-                    catalogoController.buscarDesdeExterno(query);
-                }
-            }
-
-            rootPane.setCenter(catalogoRoot);
-            ocultarBarraSuperior(true);
-        } catch (IOException e) {
-            e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Catálogo", "No se pudo abrir el catálogo:\n" + e.getMessage());
-        }
-    }
-
     @FXML
-    private void abrirMisPrestamos(javafx.event.ActionEvent event) {
+    private void abrirMisPrestamos(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("mis-prestamos.fxml"));
             Parent vista = loader.load();
@@ -447,29 +170,241 @@ public class MenuPrincipal {
     }
 
     @FXML
-    private void handleCerrarSesion(javafx.event.ActionEvent event) {
-        Alert conf = new Alert(Alert.AlertType.CONFIRMATION, "¿Cerrar sesión?", ButtonType.OK, ButtonType.CANCEL);
-        conf.setHeaderText(null);
-        conf.setTitle("Confirmación");
-        if (conf.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) return;
-
+    private void handleEditarLibros(ActionEvent event) {
+        if (!puedeEditar()) return;
         try {
-            // 1) Limpiar estado de sesión y carrito
-            this.usuarioActual = null;
-            try { org.example.int_biblioteca.CarritoService.vaciar(); } catch (Exception ignored) {}
-
-            // 2) Volver a la pantalla de login
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("hello-view.fxml"));
-            javafx.scene.Scene scene = new javafx.scene.Scene(loader.load());
-            javafx.stage.Stage stage = (javafx.stage.Stage) rootPane.getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
-        } catch (Exception e) {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("crud-libros.fxml"));
+            Parent crudView = loader.load();
+            rootPane.setCenter(crudView);
+        } catch (IOException e) {
             e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Cerrar sesión", "No se pudo regresar al inicio de sesión:\n" + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Libros", "No se pudo cargar la vista de edición de libros.");
         }
     }
 
+    @FXML
+    private void handleEditarInfo(ActionEvent event) {
+        if (!puedeEditar()) return;
 
+        // Toma el texto actual visible en infoP
+        StringBuilder actual = new StringBuilder();
+        for (Node n : new ArrayList<>(infoP.getChildren())) {
+            if (n instanceof Label l) {
+                if (!actual.isEmpty()) actual.append("\n");
+                actual.append(l.getText());
+            }
+        }
 
+        TextArea editor = new TextArea(actual.toString());
+        editor.setPromptText("Escribe la información principal (líneas en párrafos).");
+
+        Dialog<ButtonType> d = new Dialog<>();
+        d.setTitle("Editar información principal");
+        d.getDialogPane().setContent(editor);
+        d.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        d.showAndWait().ifPresent(bt -> {
+            if (bt == ButtonType.OK) {
+                renderInfo(editor.getText()); // pinta en pantalla
+                // Si quieres persistirlo: CmsDAO.set("INFO_PRINCIPAL", editor.getText());
+            }
+        });
+    }
+
+    @FXML
+    private void handleEditarSlider(ActionEvent event) {
+        if (!puedeEditar()) return;
+        if (sliderController == null) return;
+
+        String inicial = String.join("\n---\n", sliderController.getSlidesText());
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Editar slider");
+        dialog.setHeaderText("Cada diapositiva sepárala con una línea que contenga solo ---");
+        TextArea area = new TextArea(inicial);
+        area.setPrefColumnCount(60);
+        area.setPrefRowCount(14);
+        dialog.getDialogPane().setContent(area);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        dialog.showAndWait().ifPresent(bt -> {
+            if (bt != ButtonType.OK) return;
+            String[] partes = area.getText().split("(?m)^\\s*---\\s*$");
+            List<String> nuevas = new ArrayList<>();
+            for (String p : partes) {
+                String s = p.strip();
+                if (!s.isEmpty()) nuevas.add(s);
+            }
+            if (!nuevas.isEmpty()) {
+                sliderController.setSlidesText(nuevas);
+                // Persistencia opcional: CmsDAO.set("SLIDER_TEXT", String.join("\n---\n", nuevas));
+            }
+        });
+    }
+
+    // ========== HANDLERS QUE FALTABAN (COINCIDEN CON TU FXML) ==========
+    @FXML
+    private void handleEditarTarifaMulta(ActionEvent e) {
+        if (!puedeEditar()) return;
+
+        double actual = 15.0; // valor por defecto si BD falla
+        try { actual = ConfigDAO.getTarifaMulta(); } catch (Exception ignored) {}
+
+        TextInputDialog d = new TextInputDialog(String.valueOf(actual));
+        d.setTitle("Tarifa de multa");
+        d.setHeaderText("Introduce la tarifa por día de atraso (por ejemplo, 50.0)");
+        d.setContentText("Tarifa por día:");
+        d.showAndWait().ifPresent(txt -> {
+            try {
+                double v = Double.parseDouble(txt);
+                if (v < 0) throw new NumberFormatException();
+                if (ConfigDAO.setTarifaMulta(v)) {
+                    showAlert(Alert.AlertType.INFORMATION, "Multa", "Tarifa actualizada a $" + v + " por día.");
+                } else {
+                    showAlert(Alert.AlertType.ERROR, "Multa", "No se pudo actualizar la tarifa.");
+                }
+            } catch (NumberFormatException ex) {
+                showAlert(Alert.AlertType.WARNING, "Valor inválido", "Escribe un número válido (>= 0).");
+            } catch (Exception ex) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Error guardando la tarifa:\n" + ex.getMessage());
+            }
+        });
+    }
+
+    @FXML
+    private void handleEditarDiasLimite(ActionEvent e) {
+        if (!puedeEditar()) return;
+
+        int actual = 3; // valor por defecto si BD falla
+        try { actual = ConfigDAO.getDiasLimite(); } catch (Exception ignored) {}
+
+        TextInputDialog d = new TextInputDialog(String.valueOf(actual));
+        d.setTitle("Días límite de préstamo");
+        d.setHeaderText("Introduce la cantidad de días permitidos para devolver el libro");
+        d.setContentText("Días:");
+        d.showAndWait().ifPresent(txt -> {
+            try {
+                int v = Integer.parseInt(txt);
+                if (v <= 0) throw new NumberFormatException();
+                if (ConfigDAO.setDiasLimite(v)) {
+                    showAlert(Alert.AlertType.INFORMATION, "Días límite", "Días límite actualizados a " + v + ".");
+                } else {
+                    showAlert(Alert.AlertType.ERROR, "Días límite", "No se pudo actualizar el valor.");
+                }
+            } catch (NumberFormatException ex) {
+                showAlert(Alert.AlertType.WARNING, "Valor inválido", "Escribe un entero válido (> 0).");
+            } catch (Exception ex) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Error guardando los días límite:\n" + ex.getMessage());
+            }
+        });
+    }
+    // =========================================================
+
+    // === Helpers ===
+    private boolean puedeEditar() {
+        if (usuarioActual == null) return false;
+        Rol r = usuarioActual.getRol();
+        return (r == Rol.ADMIN || r == Rol.BIBLIOTECARIO);
+    }
+
+    private void abrirCatalogo(String query) {
+        try {
+            if (catalogoRoot == null) {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("catalogo-libros.fxml"));
+                catalogoRoot = loader.load();
+                catalogoController = loader.getController();
+            }
+            if (catalogoController != null) {
+                catalogoController.setUsuarioActual(usuarioActual);
+                if (query != null && !query.isBlank()) {
+                    catalogoController.buscarDesdeExterno(query);
+                }
+            }
+            rootPane.setCenter(catalogoRoot);
+            ocultarBarraSuperior(true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Catálogo", "No se pudo abrir el catálogo:\n" + e.getMessage());
+        }
+    }
+
+    private void cargarSlider() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("slider.fxml"));
+            HBox slider = loader.load();
+            sliderController = loader.getController();
+            slider.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+            HBox.setHgrow(slider, Priority.ALWAYS);
+            sliderContainer.getChildren().setAll(slider);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /** Renderiza infoP en párrafos (líneas vacías insertan espacio). */
+    private void renderInfo(String texto) {
+        infoP.getChildren().clear();
+        if (texto == null || texto.isBlank()) {
+            infoP.getChildren().add(new Label("(sin información)"));
+            return;
+        }
+        String[] lineas = texto.split("\\R");
+        for (String ln : lineas) {
+            if (ln.isBlank()) {
+                Region sep = new Region();
+                sep.setMinHeight(6);
+                infoP.getChildren().add(sep);
+            } else {
+                Label lbl = new Label(ln);
+                lbl.setWrapText(true);
+                lbl.setStyle("-fx-text-fill: #1B2D4F; -fx-font-size: 14px;");
+                lbl.setMaxWidth(Double.MAX_VALUE);
+                infoP.getChildren().add(lbl);
+            }
+        }
+    }
+
+    private void ocultarBarraSuperior(boolean ocultar) {
+        if (barraBusquedaSuperior != null) {
+            barraBusquedaSuperior.setVisible(!ocultar);
+            barraBusquedaSuperior.setManaged(!ocultar);
+        }
+    }
+    private void restaurarBarraSuperior() { ocultarBarraSuperior(false); }
+
+    private void setVis(Button b, boolean visible) {
+        if (b == null) return;
+        if (b.managedProperty().isBound()) {
+            b.visibleProperty().set(visible);
+        } else {
+            b.setVisible(visible);
+            b.setManaged(visible);
+        }
+    }
+
+    private void mirrorManagedToVisible(Control... nodes) {
+        if (nodes == null) return;
+        for (Control n : nodes) {
+            if (n != null) n.managedProperty().bind(n.visibleProperty());
+        }
+    }
+
+    private void showAlert(Alert.AlertType type, String title, String content) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+    @FXML
+    private void handleCerrarSesion(ActionEvent e) {
+        try {
+            this.usuarioActual = null;
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("hello-view.fxml"));
+            Parent login = loader.load();
+            javafx.stage.Stage stage = (javafx.stage.Stage) rootPane.getScene().getWindow();
+            stage.setScene(new javafx.scene.Scene(login));
+            stage.show();
+        } catch (IOException ex) {
+            showAlert(Alert.AlertType.ERROR, "Cerrar sesión", "No se pudo regresar al inicio:\n" + ex.getMessage());
+        }
+    }
 }
